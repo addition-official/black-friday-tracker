@@ -1,0 +1,10 @@
+[build]
+  publish = "."
+
+[build.environment]
+  # The passcode is a normal word that also appears on the page ("happy thanksgiving!"),
+  # so don't let it block deploys. The jsonbin key is still scanned.
+  SECRETS_SCAN_OMIT_KEYS = "TRACKER_PASSCODE"
+
+[functions]
+  directory = "netlify/functions"

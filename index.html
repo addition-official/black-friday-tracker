@@ -1,0 +1,1301 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>black friday 2026</title>
+<link rel="icon" type="image/png" href="favicon.png">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700;12..96,800&family=Figtree:wght@400;500;600;700&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
+<style>
+/* ============ THEME (colours from the favicon) ============ */
+:root {
+    --bg: #171311;
+    --surface: #221c19;
+    --surface-2: #2c2420;
+    --ink: #f4ece2;
+    --muted: #a39488;
+    --line: rgba(244,236,226,0.08);
+    --accent: #ee5d3f;
+    --accent-soft: rgba(238,93,63,0.14);
+    --want: #b9aa9d;
+    --want-bg: rgba(185,170,157,0.12);
+    --ordered: #f2a93b;
+    --ordered-bg: rgba(242,169,59,0.14);
+    --arrived: #6fcf8e;
+    --arrived-bg: rgba(111,207,142,0.13);
+    --shadow: 0 1px 0 rgba(255,255,255,0.03) inset, 0 10px 30px rgba(0,0,0,0.35);
+    --display: "Bricolage Grotesque", Georgia, serif;
+    --body: "Figtree", "Segoe UI", sans-serif;
+    --mono: "JetBrains Mono", ui-monospace, monospace;
+}
+body.light {
+    --bg: #f5eee4;
+    --surface: #fffaf3;
+    --surface-2: #efe5d7;
+    --ink: #26201c;
+    --muted: #85776b;
+    --line: rgba(38,32,28,0.09);
+    --accent: #e2512f;
+    --accent-soft: rgba(226,81,47,0.10);
+    --want: #7d6f63;
+    --want-bg: rgba(125,111,99,0.10);
+    --ordered: #b8720a;
+    --ordered-bg: rgba(242,169,59,0.16);
+    --arrived: #2b8f4e;
+    --arrived-bg: rgba(43,143,78,0.11);
+    --shadow: 0 1px 2px rgba(38,32,28,0.06), 0 8px 24px rgba(38,32,28,0.08);
+}
+
+* { box-sizing: border-box; }
+body {
+    margin: 0;
+    padding: 28px 20px 60px;
+    background:
+        radial-gradient(900px 500px at 50% -200px, var(--accent-soft), transparent 70%),
+        var(--bg);
+    font-family: var(--body);
+    color: var(--ink);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    min-height: 100vh;
+    transition: background-color 0.3s, color 0.3s;
+}
+/* paper grain */
+body::before {
+    content: "";
+    position: fixed; inset: 0;
+    pointer-events: none;
+    opacity: 0.06;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+    z-index: 0;
+}
+#container, #dates { position: relative; z-index: 1; }
+button { cursor: pointer; font-family: inherit; color: inherit; }
+a { color: inherit; }
+
+/* ============ COUNTDOWN TICKETS (left side) ============ */
+#dates {
+    position: fixed;
+    left: 28px;
+    top: 104px;
+    width: 188px;
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+}
+.date-card {
+    position: relative;
+    overflow: hidden;
+    background: var(--surface);
+    border-radius: 14px;
+    padding: 14px 16px 12px;
+    box-shadow: var(--shadow);
+}
+.date-top { display: flex; align-items: baseline; justify-content: space-between; }
+.date-days { font-family: var(--display); font-size: 40px; font-weight: 800; line-height: 1; letter-spacing: -1px; }
+.date-emoji { font-size: 20px; }
+.date-label { font-size: 13px; font-weight: 600; margin-top: 4px; color: var(--muted); }
+.date-sub {
+    position: relative;
+    font-family: var(--mono); font-size: 11px; color: var(--muted); letter-spacing: 0.5px; text-transform: uppercase;
+    margin-top: 12px; padding-top: 10px;
+    border-top: 2px dashed var(--line);
+}
+/* ticket notches on the tear line */
+.date-sub::before, .date-sub::after {
+    content: ""; position: absolute; top: -9px; width: 16px; height: 16px; border-radius: 50%; background: var(--bg);
+}
+.date-sub::before { left: -24px; }
+.date-sub::after { right: -24px; }
+.date-card.next { background: var(--accent); color: #fff; }
+.date-card.next .date-label, .date-card.next .date-sub { color: rgba(255,255,255,0.85); }
+.date-card.next .date-sub { border-top-color: rgba(255,255,255,0.35); }
+.date-card.today { background: var(--accent); color: #fff; animation: pulse 2s ease-in-out infinite; }
+.date-card.today .date-label, .date-card.today .date-sub { color: rgba(255,255,255,0.9); }
+.date-card.today .date-sub { border-top-color: rgba(255,255,255,0.35); }
+.date-card.today .date-days { font-size: 30px; }
+.date-card.done { opacity: 0.4; }
+@keyframes pulse { 50% { transform: scale(1.03); } }
+
+@media (max-width: 1040px) {
+    #dates { position: static; flex-direction: row; width: 100%; max-width: 640px; margin-bottom: 22px; gap: 10px; }
+    .date-card { flex: 1; padding: 12px 12px 10px; }
+    .date-days { font-size: 30px; }
+    .date-card.today .date-days { font-size: 22px; }
+    .date-label { font-size: 12px; }
+    .date-sub { margin-top: 10px; padding-top: 8px; font-size: 10px; }
+    .date-sub::before { left: -20px; } .date-sub::after { right: -20px; }
+}
+
+/* ============ HEADER ============ */
+#container { width: 100%; max-width: 640px; }
+#topbar { display: flex; align-items: center; gap: 14px; margin-bottom: 22px; }
+#logo { width: 46px; height: 46px; border-radius: 12px; box-shadow: var(--shadow); }
+#titleWrap { flex: 1; }
+#eyebrow { font-family: var(--mono); font-size: 11px; letter-spacing: 2px; text-transform: uppercase; color: var(--accent); font-weight: 700; }
+#bigtitle { font-family: var(--display); font-size: 32px; font-weight: 800; letter-spacing: -1px; line-height: 1.05; }
+.icon-btn {
+    background: var(--surface);
+    border: 1px solid var(--line);
+    padding: 9px 13px;
+    border-radius: 10px;
+    font-size: 13px;
+    font-weight: 600;
+    box-shadow: var(--shadow);
+}
+.icon-btn:hover { border-color: var(--muted); }
+
+/* ============ FILTERS ============ */
+#filters { display: flex; gap: 4px; background: var(--surface); padding: 5px; border-radius: 14px; box-shadow: var(--shadow); }
+.filter-btn {
+    flex: 1;
+    background: transparent;
+    border: none;
+    padding: 10px 6px;
+    border-radius: 10px;
+    color: var(--muted);
+    font-weight: 700;
+    font-size: 14px;
+    display: inline-flex; align-items: center; justify-content: center; gap: 7px;
+    transition: background 0.15s, color 0.15s;
+}
+.filter-btn .n {
+    font-family: var(--mono); font-size: 11px; font-weight: 700;
+    background: var(--surface-2); color: var(--muted);
+    padding: 2px 6px; border-radius: 6px; min-width: 20px;
+}
+.filter-btn:hover:not(.active) { color: var(--ink); }
+.filter-btn.active { background: var(--ink); color: var(--bg); }
+.filter-btn.active .n { background: var(--accent); color: #fff; }
+#hint { font-size: 12.5px; color: var(--muted); text-align: center; margin: 12px 0 20px; }
+
+/* ============ CATEGORIES ============ */
+.category {
+    background: var(--surface);
+    border-radius: 16px;
+    margin-bottom: 16px;
+    box-shadow: var(--shadow);
+    overflow: hidden;
+}
+.category.enter { animation: rise 0.45s cubic-bezier(.2,.8,.2,1) both; }
+@keyframes rise { from { opacity: 0; transform: translateY(12px); } }
+.category-header {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 14px 14px 12px 12px;
+    cursor: pointer;
+    user-select: none;
+}
+.cat-arrow { width: 14px; font-size: 10px; color: var(--muted); transition: transform 0.2s; display: inline-block; }
+.collapsed .cat-arrow { transform: rotate(-90deg); }
+.cat-name { flex: 1; font-family: var(--display); font-size: 21px; font-weight: 700; letter-spacing: -0.4px; }
+.cat-name.done { opacity: 0.45; text-decoration: line-through; }
+.cat-count { font-family: var(--mono); font-size: 11px; color: var(--muted); }
+.add-item-btn {
+    border: none;
+    border-radius: 9px;
+    padding: 7px 12px;
+    font-size: 13px;
+    font-weight: 700;
+    background: var(--accent);
+    color: #fff;
+}
+.add-item-btn:hover { filter: brightness(1.08); }
+.more-btn {
+    border: 1px solid var(--line); background: transparent; border-radius: 9px;
+    height: 32px; padding: 0 11px; font-size: 13px; font-weight: 700; color: var(--muted);
+}
+.more-btn:hover { color: var(--ink); border-color: var(--muted); }
+.collapsed .items { display: none; }
+.empty-cat { font-size: 13px; color: var(--muted); padding: 4px 16px 16px 38px; }
+
+/* ============ ITEM ROWS ============ */
+.item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px 14px 12px 8px;
+    border-top: 1px solid var(--line);
+    cursor: pointer;
+    transition: background 0.12s;
+}
+.item:hover { background: var(--surface-2); }
+.drag-handle { cursor: grab; color: var(--muted); opacity: 0.35; font-size: 13px; padding: 4px 2px; letter-spacing: -2px; }
+.drag-handle:hover { opacity: 1; }
+.no-drag .drag-handle { visibility: hidden; }
+.thumb {
+    width: 48px; height: 48px; flex-shrink: 0;
+    border-radius: 10px;
+    object-fit: cover;
+    background: var(--surface-2);
+    box-shadow: 0 0 0 1px var(--line);
+}
+.item-main { flex: 1; min-width: 0; }
+.thumb-wrap { position: relative; flex-shrink: 0; display: block; cursor: zoom-in; }
+.pic-count {
+    position: absolute; right: -6px; bottom: -6px;
+    background: var(--ink); color: var(--bg);
+    font-size: 10.5px; font-weight: 700; line-height: 1;
+    padding: 3px 5px; border-radius: 7px;
+    border: 2px solid var(--surface);
+    white-space: nowrap;
+}
+.field-help { font-size: 11.5px; color: var(--muted); margin-top: 6px; }
+.track-line {
+    display: block;
+    margin-top: 6px; font-size: 12.5px; font-weight: 600; line-height: 1.45;
+    color: var(--ordered);
+}
+.track-line .tdot { display: inline-block; width: 7px; height: 7px; border-radius: 50%; background: currentColor; margin-right: 6px; vertical-align: 1px; }
+.track-line .tsub { color: var(--muted); font-weight: 500; }
+.track-line.m-out_for_delivery .tdot, .track-line.checking .tdot { animation: blink 1.2s ease-in-out infinite; }
+.track-line.m-delivered { color: var(--arrived); }
+.track-line.m-exception, .track-line.m-failed_attempt { color: var(--accent); }
+.track-line.m-pending, .track-line.m-info_received, .track-line.checking { color: var(--muted); }
+@keyframes blink { 50% { opacity: 0.25; } }
+
+#fTimeline:empty { display: none; }
+.timeline { margin-top: 10px; background: var(--bg); border: 1px solid var(--line); border-radius: 12px; padding: 12px 14px; }
+.tl-head { display: flex; align-items: center; justify-content: space-between; gap: 8px; margin-bottom: 4px; }
+.tl-status { font-weight: 800; font-size: 14px; display: flex; align-items: center; gap: 7px; }
+.tl-status .tdot { width: 8px; height: 8px; border-radius: 50%; background: currentColor; }
+.tl-refresh { background: transparent; border: 1px solid var(--line); border-radius: 8px; padding: 4px 9px; font-size: 12px; font-weight: 700; color: var(--muted); }
+.tl-refresh:hover { color: var(--ink); border-color: var(--muted); }
+.tl-sub { font-size: 12px; color: var(--muted); margin-bottom: 8px; }
+.tl-ev { position: relative; padding: 0 0 10px 18px; font-size: 12.5px; }
+.tl-ev::before { content: ""; position: absolute; left: 3px; top: 5px; width: 7px; height: 7px; border-radius: 50%; background: var(--muted); opacity: 0.5; }
+.tl-ev::after { content: ""; position: absolute; left: 6px; top: 14px; bottom: -2px; border-left: 1px dashed var(--line); }
+.tl-ev:last-child { padding-bottom: 0; } .tl-ev:last-child::after { display: none; }
+.tl-ev:first-child::before { background: currentColor; opacity: 1; }
+.tl-ev .ev-text { font-weight: 600; color: var(--ink); }
+.tl-ev .ev-meta { color: var(--muted); font-size: 11.5px; margin-top: 1px; }
+.item-note {
+    font-size: 12.5px; color: var(--muted); font-style: italic; margin-top: 4px;
+    overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+}
+.item-note::before { content: "“"; } .item-note::after { content: "”"; }
+.item-name { font-size: 15.5px; font-weight: 600; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.item-meta { font-size: 12.5px; color: var(--muted); margin-top: 5px; display: flex; align-items: center; gap: 6px 10px; flex-wrap: wrap; }
+.meta-bit { display: inline-flex; align-items: center; gap: 4px; }
+.price { font-family: var(--mono); font-weight: 700; font-size: 13px; color: var(--ink); }
+.st-arrived .item-name { color: var(--muted); text-decoration: line-through; text-decoration-color: var(--arrived); }
+.st-arrived .thumb, .st-arrived .price, .st-arrived .item-note { opacity: 0.55; }
+
+/* real link buttons */
+.chip-link {
+    display: inline-flex; align-items: center; gap: 5px;
+    padding: 4px 10px;
+    border-radius: 8px;
+    font-size: 12px; font-weight: 700;
+    text-decoration: none;
+    border: 1.5px solid currentColor;
+    transition: background 0.15s, color 0.15s;
+}
+.chip-link .arr { font-size: 11px; }
+.chip-link.track { color: var(--ordered); }
+.chip-link.track:hover { background: var(--ordered); color: var(--bg); }
+.chip-link.view { color: var(--ink); border-color: var(--line); background: var(--surface-2); }
+.chip-link.view:hover { border-color: var(--ink); }
+
+/* status tag: a label you can change */
+.status-tag {
+    flex-shrink: 0;
+    display: inline-flex; align-items: center; gap: 7px;
+    padding: 6px 9px 6px 10px;
+    border-radius: 8px;
+    border: none;
+    font-size: 12.5px; font-weight: 700;
+    transition: filter 0.15s;
+}
+.status-tag .dot { width: 8px; height: 8px; border-radius: 50%; background: currentColor; }
+.status-tag .caret { opacity: 0.6; font-size: 10px; margin-left: 1px; }
+.status-tag:hover { filter: brightness(1.15); }
+.status-tag.want { color: var(--want); background: var(--want-bg); }
+.status-tag.ordered { color: var(--ordered); background: var(--ordered-bg); }
+.status-tag.arrived { color: var(--arrived); background: var(--arrived-bg); }
+
+/* status menu */
+#statusMenu {
+    position: fixed;
+    display: none;
+    z-index: 150;
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-radius: 12px;
+    padding: 6px;
+    width: 230px;
+    box-shadow: 0 14px 40px rgba(0,0,0,0.45);
+    animation: pop 0.14s ease-out;
+}
+@keyframes pop { from { opacity: 0; transform: translateY(-4px) scale(0.98); } }
+.sm-title { font-family: var(--mono); font-size: 10px; letter-spacing: 1.5px; text-transform: uppercase; color: var(--muted); padding: 6px 10px 4px; }
+.sm-opt {
+    display: flex; align-items: center; gap: 10px;
+    width: 100%; text-align: left;
+    background: transparent; border: none; border-radius: 8px;
+    padding: 9px 10px;
+}
+.sm-opt:hover { background: var(--surface-2); }
+.sm-opt .dot { width: 9px; height: 9px; border-radius: 50%; flex-shrink: 0; }
+.sm-opt.want .dot { background: var(--want); }
+.sm-opt.ordered .dot { background: var(--ordered); }
+.sm-opt.arrived .dot { background: var(--arrived); }
+.sm-name { font-weight: 700; font-size: 14px; }
+.sm-desc { font-size: 12px; color: var(--muted); }
+.sm-opt .check { margin-left: auto; color: var(--accent); font-weight: 800; }
+
+.sortable-ghost { opacity: 0.25; }
+#emptyState { text-align: center; color: var(--muted); margin: 50px 0 30px; line-height: 1.7; font-size: 15px; }
+#emptyState b { font-family: var(--display); font-size: 22px; color: var(--ink); display: block; margin-bottom: 4px; }
+#addCategory {
+    width: 100%; padding: 14px;
+    border: 2px dashed var(--line); background: transparent; box-shadow: none;
+    color: var(--muted); border-radius: 16px; font-size: 14px;
+}
+#addCategory:hover { border-color: var(--accent); color: var(--accent); }
+
+/* ============ MODALS ============ */
+.modal-overlay {
+    position: fixed; inset: 0;
+    background: rgba(10,8,7,0.6);
+    backdrop-filter: blur(4px);
+    display: none;
+    justify-content: center;
+    align-items: center;
+    z-index: 100;
+    padding: 16px;
+}
+.modal-box {
+    background: var(--surface);
+    padding: 24px;
+    border-radius: 18px;
+    width: 350px;
+    max-width: 100%;
+    max-height: 90vh;
+    overflow-y: auto;
+    box-shadow: 0 20px 60px rgba(0,0,0,0.5);
+    border: 1px solid var(--line);
+    animation: pop 0.18s ease-out;
+}
+.modal-box.wide { width: 440px; }
+.modal-box h3 { margin: 0 0 4px; font-family: var(--display); font-size: 24px; font-weight: 800; letter-spacing: -0.5px; }
+.field-label { display: block; font-size: 12px; font-weight: 700; color: var(--muted); margin: 14px 0 6px; }
+input, textarea {
+    width: 100%;
+    padding: 11px 12px;
+    margin: 0;
+    border-radius: 10px;
+    border: 1px solid var(--line);
+    background: var(--bg);
+    color: var(--ink);
+    font-family: inherit;
+    font-size: 14.5px;
+}
+input::placeholder, textarea::placeholder { color: var(--muted); opacity: 0.7; }
+input:focus, textarea:focus { outline: 2px solid var(--accent); outline-offset: -1px; border-color: transparent; }
+#fPrice { font-family: var(--mono); }
+textarea { height: 86px; resize: vertical; }
+.row2 { display: flex; gap: 10px; }
+.row2 > div { flex: 1; min-width: 0; }
+
+.seg { display: flex; gap: 6px; }
+.seg button {
+    flex: 1;
+    display: inline-flex; align-items: center; justify-content: center; gap: 7px;
+    padding: 10px 4px;
+    border-radius: 10px;
+    background: var(--bg);
+    border: 1.5px solid var(--line);
+    color: var(--muted);
+    font-weight: 700;
+    font-size: 13.5px;
+}
+.seg button .dot { width: 8px; height: 8px; border-radius: 50%; background: currentColor; opacity: 0.5; }
+.seg button.on .dot { opacity: 1; }
+.seg button.on.want { border-color: var(--want); color: var(--want); background: var(--want-bg); }
+.seg button.on.ordered { border-color: var(--ordered); color: var(--ordered); background: var(--ordered-bg); }
+.seg button.on.arrived { border-color: var(--arrived); color: var(--arrived); background: var(--arrived-bg); }
+
+.gallery { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 8px; }
+.gallery:empty { display: none; }
+.gallery-item { position: relative; width: 64px; height: 64px; }
+.gallery-item img { width: 100%; height: 100%; object-fit: cover; border-radius: 10px; cursor: pointer; box-shadow: 0 0 0 1px var(--line); }
+.del-img {
+    position: absolute; top: -6px; right: -6px;
+    background: var(--accent); color: white; border: 2px solid var(--surface);
+    width: 22px; height: 22px; border-radius: 50%; font-size: 12px; line-height: 1; padding: 0;
+}
+.inline-add { display: flex; gap: 6px; }
+.inline-add input { flex: 1; }
+.small-btn { border: none; border-radius: 10px; padding: 0 14px; font-size: 13px; font-weight: 700; background: var(--ink); color: var(--bg); }
+
+.modal-actions { display: flex; gap: 8px; margin-top: 22px; }
+.btn-primary { flex: 1; background: var(--accent); color: white; border: none; border-radius: 11px; padding: 12px; font-size: 15px; font-weight: 700; }
+.btn-primary:hover { filter: brightness(1.08); }
+.btn-danger { background: transparent; color: var(--accent); border: 1.5px solid var(--accent-soft); border-radius: 11px; padding: 11px 14px; font-size: 13px; font-weight: 700; }
+.btn-danger:hover { background: var(--accent-soft); }
+.btn-plain { background: transparent; color: var(--muted); border: 1.5px solid var(--line); border-radius: 11px; padding: 11px 14px; font-size: 13px; font-weight: 700; }
+.btn-plain:hover { color: var(--ink); }
+
+/* passcode */
+.pass-wrap { position: relative; margin-top: 12px; }
+.pass-wrap input { padding-right: 44px; }
+#togglePass {
+    position: absolute; top: 0; bottom: 0; right: 4px;
+    background: transparent; border: none; color: var(--ink); opacity: 0.6;
+    padding: 0 9px; display: flex; align-items: center;
+}
+#passError { color: var(--accent); font-size: 12.5px; font-weight: 600; margin-top: 8px; display: none; }
+
+/* lightbox */
+#lightbox {
+    position: fixed; inset: 0;
+    background: rgba(0,0,0,0.92);
+    display: none; flex-direction: column; justify-content: center; align-items: center;
+    z-index: 200;
+}
+#lightboxImg { max-width: 90%; max-height: 80%; border-radius: 10px; }
+#lbNav { margin-top: 20px; display: flex; gap: 20px; align-items: center; color: white; font-family: var(--mono); font-size: 13px; }
+.lb-btn { background: #2a2a2a; color: white; border: 1px solid #444; padding: 8px 16px; border-radius: 20px; }
+#closeLightbox { position: absolute; top: 20px; right: 20px; background: transparent; border: none; color: white; font-size: 30px; }
+
+/* toast */
+#toast {
+    position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%);
+    background: var(--ink); color: var(--bg); padding: 11px 16px; border-radius: 12px; font-size: 13.5px; font-weight: 600;
+    display: none; z-index: 400; box-shadow: 0 10px 30px rgba(0,0,0,0.4);
+    pointer-events: none;
+}
+
+@media (max-width: 520px) {
+    body { padding: 18px 12px 60px; }
+    #bigtitle { font-size: 26px; }
+    .filter-btn { font-size: 13px; gap: 5px; }
+    .item { gap: 10px; padding-right: 10px; }
+    .thumb { width: 42px; height: 42px; }
+    .cat-count { display: none; }
+}
+</style>
+</head>
+
+<body>
+
+<div id="dates"></div>
+
+<div id="container">
+    <div id="topbar">
+        <img id="logo" src="favicon.png" alt="">
+        <div id="titleWrap">
+            <div id="eyebrow" class="year">deals 2026</div>
+            <div id="bigtitle">black friday list</div>
+        </div>
+        <button id="toggleMode" class="icon-btn" title="switch light/dark">☀︎ light</button>
+    </div>
+
+    <div id="filters"></div>
+    <div id="hint">tap an item to open it • tap its status to change it</div>
+
+    <div id="board"></div>
+    <button id="addCategory" class="icon-btn">+ new category (like "tech" or "kitchen")</button>
+</div>
+
+<!-- ITEM PANEL: everything about one item -->
+<div id="itemModal" class="modal-overlay">
+    <div class="modal-box wide">
+        <h3 id="itemModalTitle">item</h3>
+
+        <label class="field-label">what is it?</label>
+        <input id="fName" placeholder="e.g. airpods pro">
+
+        <label class="field-label">status</label>
+        <div class="seg" id="fStatus">
+            <button type="button" data-st="want"><span class="dot"></span>want</button>
+            <button type="button" data-st="ordered"><span class="dot"></span>ordered</button>
+            <button type="button" data-st="arrived"><span class="dot"></span>arrived</button>
+        </div>
+
+        <div class="row2">
+            <div>
+                <label class="field-label">price</label>
+                <input id="fPrice" placeholder="$">
+            </div>
+            <div>
+                <label class="field-label">store</label>
+                <input id="fStore" placeholder="amazon, target...">
+            </div>
+        </div>
+
+        <label class="field-label">link to the product</label>
+        <input id="fLink" placeholder="https://...">
+
+        <label class="field-label">tracking number (once it's ordered)</label>
+        <input id="fTracking" placeholder="e.g. 1Z999AA10123456784 or TBA123456789000" autocomplete="off" spellcheck="false">
+        <div class="field-help">paste the number from the shipping email and it'll track itself. a tracking link works too.</div>
+        <div id="fTimeline"></div>
+
+        <label class="field-label">notes</label>
+        <textarea id="fNotes" placeholder="colour, size, deal code, anything..."></textarea>
+
+        <label class="field-label">pictures</label>
+        <div id="fGallery" class="gallery"></div>
+        <div class="inline-add">
+            <input id="fImgUrl" placeholder="paste an image link...">
+            <button type="button" id="fAddImg" class="small-btn">add</button>
+        </div>
+
+        <div class="modal-actions">
+            <button type="button" id="fDelete" class="btn-danger">delete</button>
+            <button type="button" id="fCancel" class="btn-plain">cancel</button>
+            <button type="button" id="fSave" class="btn-primary">save</button>
+        </div>
+    </div>
+</div>
+
+<!-- CATEGORY PANEL: add / rename / delete -->
+<div id="catModal" class="modal-overlay">
+    <div class="modal-box">
+        <h3 id="catModalTitle">new category</h3>
+        <label class="field-label">name</label>
+        <input id="catName" placeholder="e.g. tech, kitchen, gifts...">
+        <div class="modal-actions">
+            <button type="button" id="catDelete" class="btn-danger">delete</button>
+            <button type="button" id="catSave" class="btn-primary">save</button>
+        </div>
+    </div>
+</div>
+
+<!-- PASSCODE -->
+<div id="passModal" class="modal-overlay">
+    <div class="modal-box">
+        <h3>🔒 passcode</h3>
+        <div class="pass-wrap">
+            <input id="passInput" type="password" placeholder="enter passcode..." autocomplete="off">
+            <button id="togglePass" type="button" title="show passcode"></button>
+        </div>
+        <div id="passError">wrong passcode, try again</div>
+        <div class="modal-actions">
+            <button id="savePass" class="btn-primary">unlock</button>
+        </div>
+    </div>
+</div>
+
+<!-- LIGHTBOX -->
+<div id="lightbox">
+    <button id="closeLightbox">×</button>
+    <img id="lightboxImg" src="" alt="">
+    <div id="lbNav">
+        <button class="lb-btn" id="lbPrev">← prev</button>
+        <span id="lbCount">1/1</span>
+        <button class="lb-btn" id="lbNext">next →</button>
+    </div>
+</div>
+
+<div id="statusMenu">
+    <div class="sm-title">change status</div>
+    <button class="sm-opt want" data-st="want"><span class="dot"></span><span><div class="sm-name">want</div><div class="sm-desc">on my list, not bought yet</div></span></button>
+    <button class="sm-opt ordered" data-st="ordered"><span class="dot"></span><span><div class="sm-name">ordered</div><div class="sm-desc">bought it, on the way</div></span></button>
+    <button class="sm-opt arrived" data-st="arrived"><span class="dot"></span><span><div class="sm-name">arrived</div><div class="sm-desc">got it, all done</div></span></button>
+</div>
+
+<div id="toast"></div>
+
+<script src="https://cdn.jsdelivr.net/npm/sortablejs@1.15.0/Sortable.min.js"></script>
+
+<script>
+// --- CONFIG ---
+// No keys in the page. /api/bin is a Netlify Function that holds the jsonbin key.
+const API_URL = "/api/bin";
+const STATUSES = ["want", "ordered", "arrived"];
+const NEXT_LABEL = { want: "mark as ordered", ordered: "mark as arrived", arrived: "move back to want" };
+
+let data = { lists: { black_friday: [], my_stuff: [] } };
+let filter = "all";
+let editing = null;        // { ci, ii } for an existing item, { ci, ii: null } for a new one
+let draft = null;          // working copy of the item being edited
+let editingCat = null;     // category index being renamed, or null for a new one
+let lb = { images: [], i: 0 };
+let sortables = [];
+let firstPaint = true;   // only animate cards in on the first load
+
+const cats = () => data.lists.black_friday;
+
+/* --- SMALL HELPERS --- */
+const $ = (id) => document.getElementById(id);
+const esc = (s) => String(s ?? "").replace(/[&<>"']/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
+const safeUrl = (u) => /^https?:\/\//i.test(String(u || "").trim()) ? String(u).trim() : "";
+const fmtPrice = (p) => { p = String(p || "").trim(); return !p ? "" : /^[\d.,]+$/.test(p) ? "$" + p : p; };
+
+function toast(msg) {
+    const t = $("toast");
+    t.textContent = msg;
+    t.style.display = "block";
+    clearTimeout(toast._t);
+    toast._t = setTimeout(() => t.style.display = "none", 2500);
+}
+
+/* --- API (talks to the Netlify Function) --- */
+function getPasscode() { try { return localStorage.getItem("trackerPasscode") || ""; } catch { return ""; } }
+function setPasscode(p) { try { localStorage.setItem("trackerPasscode", p); } catch {} }
+
+function askPasscode(isRetry) {
+    return new Promise(resolve => {
+        const modal = $("passModal"), input = $("passInput"), btn = $("savePass"), eye = $("togglePass");
+        const EYE = `<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-7 11-7 11 7 11 7-4 7-11 7S1 12 1 12z"/><circle cx="12" cy="12" r="3"/></svg>`;
+        const EYE_OFF = `<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17.94 17.94A10.07 10.07 0 0 1 12 19c-7 0-11-7-11-7a18.45 18.45 0 0 1 5.06-5.94"/><path d="M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 7 11 7a18.5 18.5 0 0 1-2.16 3.19"/><path d="M14.12 14.12a3 3 0 1 1-4.24-4.24"/><line x1="1" y1="1" x2="23" y2="23"/></svg>`;
+        $("passError").style.display = isRetry ? "block" : "none";
+        input.value = "";
+        input.type = "password";
+        eye.innerHTML = EYE;
+        eye.style.opacity = "0.6";
+        eye.onclick = () => {
+            const showing = input.type === "text";
+            input.type = showing ? "password" : "text";
+            eye.innerHTML = showing ? EYE : EYE_OFF;
+            eye.style.opacity = showing ? "0.6" : "1";
+            input.focus();
+        };
+        modal.style.display = "flex";
+        input.focus();
+        const submit = () => {
+            const val = input.value.trim();
+            if (!val) { input.focus(); return; }
+            btn.onclick = null;
+            input.onkeydown = null;
+            modal.style.display = "none";
+            resolve(val);
+        };
+        btn.onclick = submit;
+        input.onkeydown = (e) => { if (e.key === "Enter") submit(); };
+    });
+}
+
+async function api(method, body, url = API_URL) {
+    let isRetry = false;
+    while (true) {
+        const headers = { "X-Tracker-Passcode": getPasscode() };
+        if (body !== undefined) headers["Content-Type"] = "application/json";
+        const res = await fetch(url, { method, headers, body: body !== undefined ? JSON.stringify(body) : undefined });
+        if (res.status !== 401) return res;
+        setPasscode("");
+        setPasscode(await askPasscode(isRetry));
+        isRetry = true;
+    }
+}
+
+/* --- LOAD / SAVE --- */
+async function loadData() {
+    try {
+        const res = await api("GET");
+        if (!res.ok) {
+            let msg = await res.text();
+            try { msg = JSON.parse(msg).error || msg; } catch {}
+            console.error("load failed", res.status, msg);
+            alert("couldn't load data 😭\n\n" + msg);
+            return;
+        }
+        const json = await res.json();
+        const remote = json.record || {};
+        if (remote.lists) data = remote;
+        else if (Array.isArray(remote.categories)) data.lists.black_friday = remote.categories;
+        const changed = migrate();
+        render();
+        if (changed) saveData();
+        refreshAllTracking();
+    } catch (e) {
+        console.error(e);
+        alert("couldn't load data 😭 check console");
+    }
+}
+
+// Brings older data into the new shape. Returns true if anything changed.
+function migrate() {
+    const before = JSON.stringify(data);
+    if (!data.lists) data.lists = {};
+    if (!Array.isArray(data.lists.black_friday)) data.lists.black_friday = [];
+
+    const fixItem = (it, fromOrders, storeName) => {
+        const obj = typeof it === "string" ? { name: it } : { ...it };
+        if (!STATUSES.includes(obj.status)) {
+            if (fromOrders) obj.status = obj.checked ? "arrived" : "ordered";
+            else obj.status = obj.checked ? "ordered" : "want";
+        }
+        if (fromOrders) {
+            // in the old "my orders" tab, link meant tracking link
+            if (obj.link && !obj.tracking) { obj.tracking = obj.link; obj.link = ""; }
+            if (!obj.store && storeName) obj.store = storeName;
+        }
+        if (!Array.isArray(obj.images)) obj.images = [];
+        if (obj.image) { obj.images.push(obj.image); delete obj.image; }
+        for (const k of ["price", "store", "link", "tracking", "notes"]) if (typeof obj[k] !== "string") obj[k] = obj[k] ? String(obj[k]) : "";
+        delete obj.checked;
+        return obj;
+    };
+
+    data.lists.black_friday.forEach(cat => {
+        cat.items = (cat.items || []).map(it => fixItem(it, false));
+        if (cat.collapsed !== undefined) { cat._collapsed = !!cat.collapsed || !!cat._collapsed; delete cat.collapsed; }
+    });
+
+    // old "my orders" tab: each store becomes a category, items keep their store name
+    const old = Array.isArray(data.lists.my_stuff) ? data.lists.my_stuff : [];
+    old.forEach(store => {
+        const items = (store.items || []).map(it => fixItem(it, true, store.name));
+        if (items.length) data.lists.black_friday.push({ name: store.name + " orders", items, _collapsed: false });
+    });
+    data.lists.my_stuff = [];
+
+    return JSON.stringify(data) !== before;
+}
+
+async function saveData() {
+    try {
+        const res = await api("PUT", data);
+        if (!res.ok) throw new Error("save failed: " + res.status + " " + await res.text());
+    } catch (e) {
+        console.error(e);
+        alert("couldn't save 😭 your last change may not be stored. check console");
+    }
+}
+
+/* --- RENDER --- */
+function counts() {
+    const c = { all: 0, want: 0, ordered: 0, arrived: 0 };
+    cats().forEach(cat => cat.items.forEach(it => { c.all++; c[it.status]++; }));
+    return c;
+}
+
+function renderFilters() {
+    const c = counts();
+    const labels = { all: "all", want: "want", ordered: "ordered", arrived: "arrived" };
+    $("filters").innerHTML = Object.keys(labels).map(k =>
+        `<button class="filter-btn ${filter === k ? "active" : ""}" onclick="setFilter('${k}')">${labels[k]}<span class="n">${c[k]}</span></button>`
+    ).join("");
+}
+
+function setFilter(f) { filter = f; render(); }
+
+function itemRow(it, ci, ii) {
+    const nPics = (it.images || []).length;
+    const img = nPics
+        ? `<span class="thumb-wrap" title="${nPics > 1 ? `see all ${nPics} pictures` : "see picture"}" onclick="event.stopPropagation(); openLightbox(${ci}, ${ii})">
+               <img class="thumb" src="${esc(it.images[0])}" alt="">
+               ${nPics > 1 ? `<span class="pic-count">${nPics} 📷</span>` : ""}
+           </span>`
+        : "";
+    const meta = [];
+    if (it.price) meta.push(`<span class="price">${esc(fmtPrice(it.price))}</span>`);
+    if (it.store) meta.push(`<span class="meta-bit">from ${esc(it.store)}</span>`);
+    const track = safeUrl(it.tracking);   // only when a link was pasted instead of a number
+    if (!track && isTrackNumber(it.tracking) && it.status === "ordered") {
+        const cl = carrierLink(it.tracking, it.trackInfo?.courier);
+        meta.push(`<a class="chip-link track" href="${esc(cl.url)}" target="_blank" rel="noopener" onclick="event.stopPropagation()" title="open the carrier's tracking page">${cl.name ? "track on " + esc(cl.name) : "track package"} <span class="arr">↗</span></a>`);
+    }
+    if (track && it.status === "ordered") meta.push(`<a class="chip-link track" href="${esc(track)}" target="_blank" rel="noopener" onclick="event.stopPropagation()">track package <span class="arr">↗</span></a>`);
+    const link = safeUrl(it.link);
+    if (link && it.status === "want") meta.push(`<a class="chip-link view" href="${esc(link)}" target="_blank" rel="noopener" onclick="event.stopPropagation()">view product <span class="arr">↗</span></a>`);
+
+    return `<div class="item st-${it.status}" onclick="openItem(${ci}, ${ii})">
+        <span class="drag-handle" onclick="event.stopPropagation()" title="drag to reorder">⋮⋮</span>
+        ${img}
+        <div class="item-main">
+            <div class="item-name">${esc(it.name)}</div>
+            ${meta.length ? `<div class="item-meta">${meta.join("")}</div>` : ""}
+            ${it.notes && it.notes.trim() ? `<div class="item-note">${esc(it.notes.trim().replace(/\s+/g, " "))}</div>` : ""}
+            ${trackLine(it)}
+        </div>
+        <button class="status-tag ${it.status}" title="change status" onclick="event.stopPropagation(); openStatusMenu(this, ${ci}, ${ii})"><span class="dot"></span>${it.status}<span class="caret">▾</span></button>
+    </div>`;
+}
+
+function render() {
+    renderFilters();
+    const board = $("board");
+    const list = cats();
+    const canDrag = filter === "all";
+
+    if (list.length === 0) {
+        board.innerHTML = `<div id="emptyState"><b>nothing here yet</b>make a category below (like "tech"), then add the stuff you want to it</div>`;
+        initSorting();
+        return;
+    }
+
+    let shownAny = false;
+    board.innerHTML = list.map((cat, ci) => {
+        const visible = cat.items.map((it, ii) => ({ it, ii })).filter(x => filter === "all" || x.it.status === filter);
+        if (filter !== "all" && visible.length === 0) return "";
+        shownAny = true;
+        const allArrived = cat.items.length > 0 && cat.items.every(it => it.status === "arrived");
+        const arrivedN = cat.items.filter(it => it.status === "arrived").length;
+        const countText = cat.items.length === 0 ? "" : `${arrivedN} of ${cat.items.length} here`;
+        const collapsed = cat._collapsed && filter === "all";
+        return `<div class="category ${collapsed ? "collapsed" : ""} ${canDrag ? "" : "no-drag"} ${firstPaint ? "enter" : ""}" style="${firstPaint ? `animation-delay:${ci * 70}ms` : ""}" data-ci="${ci}">
+            <div class="category-header" onclick="toggleCat(${ci})">
+                <span class="drag-handle cat-handle" onclick="event.stopPropagation()" title="drag to reorder">⋮⋮</span>
+                <span class="cat-arrow">▼</span>
+                <span class="cat-name ${allArrived ? "done" : ""}">${esc(cat.name)}</span>
+                <span class="cat-count">${countText}</span>
+                <button class="add-item-btn" onclick="event.stopPropagation(); openItem(${ci}, null)">+ add item</button>
+                <button class="more-btn" title="rename or delete this category" onclick="event.stopPropagation(); openCat(${ci})">edit</button>
+            </div>
+            <div class="items" id="items-${ci}">
+                ${visible.length ? visible.map(x => itemRow(x.it, ci, x.ii)).join("") : `<div class="empty-cat">nothing here yet, tap + add</div>`}
+            </div>
+        </div>`;
+    }).join("");
+
+    if (!shownAny) board.innerHTML = `<div id="emptyState"><b>all clear</b>nothing is "${filter}" right now</div>`;
+    if (list.length) firstPaint = false;
+    initSorting();
+}
+
+/* --- STATUS MENU --- */
+let menuTarget = null;
+let menuOpenY = 0;
+
+function openStatusMenu(btn, ci, ii) {
+    const menu = $("statusMenu");
+    if (menu.style.display === "block" && menuTarget && menuTarget.ci === ci && menuTarget.ii === ii) { closeStatusMenu(); return; }
+    menuTarget = { ci, ii };
+    menuOpenY = window.scrollY;
+    const current = cats()[ci].items[ii].status;
+    menu.querySelectorAll(".sm-opt").forEach(o => {
+        o.querySelector(".check")?.remove();
+        if (o.dataset.st === current) o.insertAdjacentHTML("beforeend", `<span class="check">✓</span>`);
+    });
+    menu.style.display = "block";
+    const r = btn.getBoundingClientRect(), mw = menu.offsetWidth, mh = menu.offsetHeight;
+    let left = Math.min(r.right - mw, window.innerWidth - mw - 8);
+    let top = r.bottom + 6;
+    if (top + mh > window.innerHeight - 8) top = r.top - mh - 6;
+    menu.style.left = Math.max(8, left) + "px";
+    menu.style.top = Math.max(8, top) + "px";
+}
+function closeStatusMenu() { $("statusMenu").style.display = "none"; menuTarget = null; }
+
+document.querySelectorAll("#statusMenu .sm-opt").forEach(o => o.onclick = async () => {
+    if (!menuTarget) return;
+    const { ci, ii } = menuTarget;
+    closeStatusMenu();
+    await setStatus(ci, ii, o.dataset.st);
+});
+document.addEventListener("click", (e) => {
+    if ($("statusMenu").style.display === "block" && !e.target.closest("#statusMenu") && !e.target.closest(".status-tag")) closeStatusMenu();
+});
+// only close on a real scroll, not the tiny nudge a tap can cause
+window.addEventListener("scroll", () => { if (menuTarget && Math.abs(window.scrollY - menuOpenY) > 40) closeStatusMenu(); }, { passive: true });
+window.addEventListener("resize", closeStatusMenu);
+
+async function setStatus(ci, ii, st) {
+    const it = cats()[ci].items[ii];
+    if (it.status === st) return;
+    it.status = st;
+    if (st === "ordered" && !it.tracking) toast("📦 tap the item to add a tracking link");
+    if (st === "arrived") toast("🎉 nice, it's here");
+    render();
+    await saveData();
+}
+
+/* --- CATEGORIES --- */
+function toggleCat(ci) {
+    if (filter !== "all") return;
+    cats()[ci]._collapsed = !cats()[ci]._collapsed;
+    render();
+    saveData();
+}
+
+function openCat(ci) {
+    editingCat = ci;
+    const isNew = ci === null;
+    $("catModalTitle").textContent = isNew ? "new category" : "edit category";
+    $("catName").value = isNew ? "" : cats()[ci].name;
+    $("catDelete").style.display = isNew ? "none" : "block";
+    $("catModal").style.display = "flex";
+    $("catName").focus();
+}
+
+$("addCategory").onclick = () => openCat(null);
+$("catName").onkeydown = (e) => { if (e.key === "Enter") $("catSave").click(); };
+
+$("catSave").onclick = async () => {
+    const name = $("catName").value.trim();
+    if (!name) { $("catName").focus(); return; }
+    if (editingCat === null) cats().push({ name, items: [], _collapsed: false });
+    else cats()[editingCat].name = name;
+    $("catModal").style.display = "none";
+    render();
+    await saveData();
+};
+
+$("catDelete").onclick = async () => {
+    const cat = cats()[editingCat];
+    const n = cat.items.length;
+    if (!confirm(`delete "${cat.name}"${n ? ` and its ${n} item${n > 1 ? "s" : ""}` : ""}?`)) return;
+    cats().splice(editingCat, 1);
+    $("catModal").style.display = "none";
+    render();
+    await saveData();
+};
+
+/* --- ITEM PANEL --- */
+function openItem(ci, ii) {
+    editing = { ci, ii };
+    const isNew = ii === null;
+    draft = isNew
+        ? { name: "", status: "want", price: "", store: "", link: "", tracking: "", notes: "", images: [] }
+        : JSON.parse(JSON.stringify(cats()[ci].items[ii]));
+    $("itemModalTitle").textContent = isNew ? `add to ${cats()[ci].name}` : "item details";
+    $("fName").value = draft.name;
+    $("fPrice").value = draft.price;
+    $("fStore").value = draft.store;
+    $("fLink").value = draft.link;
+    $("fTracking").value = draft.tracking;
+    $("fNotes").value = draft.notes;
+    $("fImgUrl").value = "";
+    $("fDelete").style.display = isNew ? "none" : "block";
+    paintStatus();
+    paintGallery();
+    paintTimeline();
+    $("itemModal").style.display = "flex";
+    $("itemModal").querySelector(".modal-box").scrollTop = 0;
+    if (isNew) $("fName").focus();
+}
+
+function paintStatus() {
+    document.querySelectorAll("#fStatus button").forEach(b => {
+        const st = b.dataset.st;
+        b.className = st + (draft.status === st ? " on" : "");
+    });
+}
+document.querySelectorAll("#fStatus button").forEach(b => b.onclick = () => { draft.status = b.dataset.st; paintStatus(); });
+
+function paintGallery() {
+    $("fGallery").innerHTML = draft.images.map((url, i) =>
+        `<div class="gallery-item"><img src="${esc(url)}" alt="" onclick="openLightboxImages(draft.images, ${i})"><button type="button" class="del-img" title="remove" onclick="draft.images.splice(${i}, 1); paintGallery()">×</button></div>`
+    ).join("");
+}
+
+function addDraftImage() {
+    const url = $("fImgUrl").value.trim();
+    if (!url) return;
+    if (!safeUrl(url)) { toast("that doesn't look like a link (should start with https://)"); return; }
+    draft.images.push(url);
+    $("fImgUrl").value = "";
+    paintGallery();
+}
+$("fAddImg").onclick = addDraftImage;
+$("fImgUrl").onkeydown = (e) => { if (e.key === "Enter") addDraftImage(); };
+
+function closeItem() { $("itemModal").style.display = "none"; editing = null; draft = null; }
+$("fCancel").onclick = closeItem;
+$("fTracking").oninput = () => {
+    if (!draft) return;
+    const v = $("fTracking").value.trim();
+    if (normNum(v) !== normNum(draft.tracking)) { draft.tracking = v; delete draft.trackInfo; }
+    paintTimeline();
+};
+
+$("fSave").onclick = async () => {
+    const name = $("fName").value.trim();
+    if (!name) { $("fName").focus(); toast("give it a name first"); return; }
+    if ($("fImgUrl").value.trim()) addDraftImage();   // don't lose a pasted-but-not-added picture
+    Object.assign(draft, {
+        name,
+        price: $("fPrice").value.trim(),
+        store: $("fStore").value.trim(),
+        link: $("fLink").value.trim(),
+        tracking: $("fTracking").value.trim(),
+        notes: $("fNotes").value
+    });
+    if (draft.tracking && draft.status === "want") draft.status = "ordered";
+    const { ci, ii } = editing;
+    const oldTracking = ii === null ? "" : (cats()[ci].items[ii].tracking || "");
+    if (normNum(draft.tracking) !== normNum(oldTracking)) delete draft.trackInfo;
+    const saved = draft;
+    if (ii === null) cats()[ci].items.push(draft);
+    else cats()[ci].items[ii] = draft;
+    if (cats()[ci]._collapsed) cats()[ci]._collapsed = false;
+    closeItem();
+    render();
+    await saveData();
+    if (isTrackable(saved) && !saved.trackInfo) refreshTracking(saved, { force: true });
+};
+
+$("fDelete").onclick = async () => {
+    const { ci, ii } = editing;
+    if (!confirm(`delete "${cats()[ci].items[ii].name}"?`)) return;
+    cats()[ci].items.splice(ii, 1);
+    closeItem();
+    render();
+    await saveData();
+};
+
+/* --- LIVE TRACKING (Ship24, via /api/track) --- */
+const TRACK_URL = "/api/track";
+const REFRESH_EVERY = 20 * 60 * 1000;     // re-check a package at most every 20 minutes
+const checking = new Set();               // items currently being looked up
+const retrying = new Set();               // items waiting to re-ask a slow first lookup
+let trackingOff = false;                  // set when the site has no Ship24 key yet
+
+const normNum = (s) => String(s || "").replace(/\s+/g, "").toUpperCase();
+const isTrackNumber = (s) => !safeUrl(s) && /^[A-Z0-9-]{5,50}$/.test(normNum(s));
+const isTrackable = (it) => it && it.status !== "want" && isTrackNumber(it.tracking);
+// Direct link to the carrier's own tracking page, so there's always a way to check
+// even if Ship24 is slow or not set up. Uses Ship24's courier when known, else the number's shape.
+function carrierLink(raw, courier = "") {
+    const n = normNum(raw);
+    const c = String(courier).toLowerCase();
+    const e = encodeURIComponent(n);
+    if (c === "ups" || /^1Z[0-9A-Z]{16}$/.test(n)) return { name: "UPS", url: `https://www.ups.com/track?tracknum=${e}` };
+    if (c.includes("amazon") || /^TB[ACM][0-9A-Z]{9,15}$/.test(n)) return { name: "Amazon", url: `https://track.amazon.com/tracking/${e}` };
+    if (c.includes("fedex") || /^(\d{12}|\d{15})$/.test(n)) return { name: "FedEx", url: `https://www.fedex.com/fedextrack/?trknbr=${e}` };
+    if (c === "us-post" || c.includes("usps") || /^9[2-5]\d{18,24}$/.test(n) || /^[A-Z]{2}\d{9}US$/.test(n))
+        return { name: "USPS", url: `https://tools.usps.com/go/TrackConfirmAction?tLabels=${e}` };
+    return { name: "", url: `https://www.google.com/search?q=${encodeURIComponent(n + " tracking")}` };
+}
+const findItem = (obj) => { for (const cat of cats()) if (cat.items.includes(obj)) return true; return false; };
+
+function fmtWhen(s) {
+    if (!s) return "";
+    const dateOnly = /^\d{4}-\d{2}-\d{2}$/.test(s);
+    const d = new Date(dateOnly ? s + "T12:00:00" : s);
+    if (isNaN(d)) return "";
+    const today = new Date(); today.setHours(0, 0, 0, 0);
+    const day = new Date(d); day.setHours(0, 0, 0, 0);
+    const diff = Math.round((day - today) / 86400000);
+    const dayTxt = diff === 0 ? "today" : diff === -1 ? "yesterday" : diff === 1 ? "tomorrow"
+        : d.toLocaleDateString("en-US", Math.abs(diff) < 7 ? { weekday: "short" } : { month: "short", day: "numeric" });
+    if (dateOnly) return dayTxt;
+    return dayTxt + " " + d.toLocaleTimeString("en-US", { hour: "numeric", minute: "2-digit" }).toLowerCase().replace(" ", "");
+}
+const fmtDay = (s) => fmtWhen(s).split(" ")[0];
+
+function trackLine(it) {
+    if (!isTrackNumber(it.tracking) || it.status === "want") return "";
+    if ((checking.has(it) || retrying.has(it)) && !it.trackInfo) return `<div class="track-line checking"><span class="tdot"></span>checking with the carrier…</div>`;
+    const t = it.trackInfo;
+    if (!t) return "";
+    const bits = [];
+    if (t.milestone === "delivered") { const w = fmtWhen(t.deliveredAt || t.latest?.when); if (w) bits.push(w); }
+    else {
+        if (t.latest?.location && t.milestone !== "pending") bits.push(t.latest.location);
+        if (t.eta) bits.push("arrives " + fmtDay(t.eta));
+    }
+    return `<div class="track-line m-${esc(t.milestone)}" title="tap the item for the full timeline"><span class="tdot"></span>${esc(t.label)}${bits.length ? ` <span class="tsub">· ${esc(bits.join(" · "))}</span>` : ""}</div>`;
+}
+
+function paintTimeline() {
+    const box = $("fTimeline");
+    if (!draft || !isTrackNumber(draft.tracking)) { box.innerHTML = ""; return; }
+    if (trackingOff) { box.innerHTML = `<div class="field-help" style="margin-top:8px">${panelCarrierBtn()}</div>`; return; }
+    const t = draft.trackInfo;
+    if (!t) { box.innerHTML = `<div class="field-help" style="margin-top:8px; display:flex; align-items:center; gap:8px; flex-wrap:wrap;">${panelCarrierBtn()}<span>${checking.size ? "checking with the carrier…" : "live updates start once it's saved and ordered."}</span></div>`; return; }
+    const colour = { delivered: "var(--arrived)", exception: "var(--accent)", failed_attempt: "var(--accent)", pending: "var(--muted)", info_received: "var(--muted)" }[t.milestone] || "var(--ordered)";
+    const sub = [t.courier && t.courier.toUpperCase(), t.eta && t.milestone !== "delivered" ? "arrives " + fmtDay(t.eta) : "", t.checkedAt ? "checked " + fmtWhen(new Date(t.checkedAt).toISOString()) : ""].filter(Boolean).join(" · ");
+    const evs = (t.events || []).map(e => `<div class="tl-ev"><div class="ev-text">${esc(e.text || "update")}</div><div class="ev-meta">${esc([e.location, fmtWhen(e.when)].filter(Boolean).join(" · "))}</div></div>`).join("");
+    box.innerHTML = `<div class="timeline">
+        <div class="tl-head"><div class="tl-status" style="color:${colour}"><span class="tdot"></span>${esc(t.label)}</div>
+        <span style="display:flex; gap:6px;">${panelCarrierBtn()}<button type="button" class="tl-refresh" onclick="refreshFromPanel()">↻ refresh</button></span></div>
+        ${sub ? `<div class="tl-sub">${esc(sub)}</div>` : ""}
+        <div style="color:${colour}">${evs || `<div class="field-help">no updates from the carrier yet. it can take a day after ordering.</div>`}</div>
+    </div>`;
+}
+
+function panelCarrierBtn() {
+    if (!draft || !isTrackNumber(draft.tracking)) return "";
+    const cl = carrierLink(draft.tracking, draft.trackInfo?.courier);
+    return `<a class="chip-link track" href="${esc(cl.url)}" target="_blank" rel="noopener">${cl.name ? "open on " + esc(cl.name) : "look it up"} <span class="arr">↗</span></a>`;
+}
+
+function refreshFromPanel() {
+    if (!editing || editing.ii === null) return;
+    const it = cats()[editing.ci].items[editing.ii];
+    refreshTracking(it, { force: true });
+}
+
+// Looks up one package and updates it. Uses the item object itself, so it's safe if the list
+// is reordered or edited while the lookup is running.
+async function refreshTracking(it, { force = false, attempt = 0 } = {}) {
+    if (trackingOff || !isTrackable(it) || checking.has(it)) return;
+    if (!force && it.trackInfo && Date.now() - (it.trackInfo.checkedAt || 0) < REFRESH_EVERY) return;
+    if (!force && it.trackInfo?.milestone === "delivered") return;
+    const number = normNum(it.tracking);
+    checking.add(it);
+    render(); if (draft) paintTimeline();
+    let res;
+    try {
+        const r = await api("POST", { trackingNumber: number }, TRACK_URL);
+        res = await r.json().catch(() => ({}));
+        if (r.status === 503 && res.setup) { trackingOff = true; return; }
+        if (!r.ok) { console.warn("tracking failed", r.status, res); return; }
+    } catch (e) { console.warn("tracking failed", e); return; }
+    finally {
+        checking.delete(it);
+        render(); if (draft) paintTimeline();
+    }
+    if (!findItem(it) || normNum(it.tracking) !== number) return;   // deleted or changed meanwhile
+
+    if (res.slow) {   // first lookup still running at Ship24; try again shortly
+        if (attempt < 3) {
+            retrying.add(it); render();
+            setTimeout(() => { retrying.delete(it); refreshTracking(it, { force: true, attempt: attempt + 1 }); }, 15000);
+        } else { render(); }
+        return;
+    }
+    const before = JSON.stringify(it.trackInfo || {});
+    it.trackInfo = { ...res, checkedAt: Date.now() };
+    let note = "";
+    if (res.milestone === "delivered" && it.status !== "arrived") { it.status = "arrived"; note = `📦 ${it.name} was delivered!`; }
+    // keep an open panel in sync
+    if (draft && editing && editing.ii !== null && cats()[editing.ci]?.items[editing.ii] === it) {
+        draft.trackInfo = it.trackInfo;
+        if (note) { draft.status = "arrived"; paintStatus(); }
+        paintTimeline();
+    }
+    render();
+    if (note) toast(note);
+    const changed = JSON.stringify({ ...it.trackInfo, checkedAt: 0 }) !== JSON.stringify({ ...JSON.parse(before), checkedAt: 0 });
+    if (changed || note) await saveData();
+}
+
+async function refreshAllTracking() {
+    for (const cat of cats()) for (const it of cat.items) {
+        if (trackingOff) return;
+        await refreshTracking(it);   // one at a time, gentle on the free plan's rate limits
+    }
+}
+setInterval(refreshAllTracking, REFRESH_EVERY);
+
+/* --- LIGHTBOX --- */
+function openLightbox(ci, ii) { openLightboxImages(cats()[ci].items[ii].images, 0); }
+function openLightboxImages(images, i) {
+    lb = { images: images.slice(), i };
+    paintLightbox();
+    $("lightbox").style.display = "flex";
+}
+function paintLightbox() {
+    const n = lb.images.length;
+    if (!n) { $("lightbox").style.display = "none"; return; }
+    lb.i = (lb.i + n) % n;
+    $("lightboxImg").src = lb.images[lb.i];
+    $("lbNav").style.display = n > 1 ? "flex" : "none";
+    $("lbCount").textContent = `${lb.i + 1}/${n}`;
+}
+$("lbPrev").onclick = () => { lb.i--; paintLightbox(); };
+$("lbNext").onclick = () => { lb.i++; paintLightbox(); };
+$("closeLightbox").onclick = () => $("lightbox").style.display = "none";
+$("lightbox").onclick = (e) => { if (e.target.id === "lightbox") $("lightbox").style.display = "none"; };
+
+/* --- DRAG TO SORT (only in "all", so positions are never ambiguous) --- */
+function initSorting() {
+    sortables.forEach(s => s.destroy());
+    sortables = [];
+    if (filter !== "all" || typeof Sortable === "undefined") return;
+
+    sortables.push(new Sortable($("board"), {
+        handle: ".cat-handle",
+        draggable: ".category",
+        animation: 150,
+        ghostClass: "sortable-ghost",
+        onEnd: async (e) => {
+            if (e.oldIndex === e.newIndex) return;
+            const moved = cats().splice(e.oldIndex, 1)[0];
+            cats().splice(e.newIndex, 0, moved);
+            render();
+            await saveData();
+        }
+    }));
+
+    cats().forEach((cat, ci) => {
+        const el = $(`items-${ci}`);
+        if (!el || !cat.items.length) return;
+        sortables.push(new Sortable(el, {
+            handle: ".drag-handle",
+            draggable: ".item",
+            animation: 150,
+            ghostClass: "sortable-ghost",
+            onEnd: async (e) => {
+                if (e.oldIndex === e.newIndex) return;
+                const moved = cat.items.splice(e.oldIndex, 1)[0];
+                cat.items.splice(e.newIndex, 0, moved);
+                render();
+                await saveData();
+            }
+        }));
+    });
+}
+
+/* --- CLOSE MODALS BY CLICKING OUTSIDE (not the passcode one) --- */
+["itemModal", "catModal"].forEach(id => {
+    $(id).onclick = (e) => { if (e.target.id === id) { $(id).style.display = "none"; if (id === "itemModal") closeItem(); } };
+});
+document.addEventListener("keydown", (e) => {
+    if (e.key !== "Escape") return;
+    if ($("statusMenu").style.display === "block") closeStatusMenu();
+    else if ($("lightbox").style.display === "flex") $("lightbox").style.display = "none";
+    else if ($("itemModal").style.display === "flex") closeItem();
+    else if ($("catModal").style.display === "flex") $("catModal").style.display = "none";
+});
+
+/* --- THEME --- */
+function applyTheme(light) {
+    document.body.classList.toggle("light", light);
+    $("toggleMode").textContent = light ? "☾ dark" : "☀︎ light";
+}
+$("toggleMode").onclick = () => {
+    const light = !document.body.classList.contains("light");
+    applyTheme(light);
+    try { localStorage.setItem("theme", light ? "light" : "dark"); } catch {}
+};
+try { applyTheme(localStorage.getItem("theme") === "light"); } catch { applyTheme(false); }
+
+/* --- COUNTDOWN --- */
+// Black Friday = the day after the 4th Thursday of November.
+function blackFridayOf(year) {
+    const nov1 = new Date(year, 10, 1);
+    const firstThu = 1 + ((4 - nov1.getDay() + 7) % 7);
+    return new Date(year, 10, firstThu + 21 + 1);
+}
+
+function renderDates(now = new Date()) {
+    const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+    const addDays = (d, n) => new Date(d.getFullYear(), d.getMonth(), d.getDate() + n);
+    let bf = blackFridayOf(today.getFullYear());
+    if (today > addDays(bf, 3)) bf = blackFridayOf(today.getFullYear() + 1);
+
+    const events = [
+        { emoji: "🦃", name: "thanksgiving", date: addDays(bf, -1) },
+        { emoji: "🛍️", name: "black friday", date: bf },
+        { emoji: "💻", name: "cyber monday", date: addDays(bf, 3) }
+    ];
+    const fmt = d => d.toLocaleDateString("en-US", { weekday: "short", month: "short", day: "numeric" });
+    let nextMarked = false;
+
+    $("dates").innerHTML = events.map(ev => {
+        const days = Math.round((ev.date - today) / 86400000);
+        let cls = "date-card", big, label;
+        if (days < 0)        { cls += " done";  big = "✓";      label = ev.name + " done"; }
+        else if (days === 0) { cls += " today"; big = "today!"; label = "it's " + ev.name; nextMarked = true; }
+        else {
+            if (!nextMarked) { cls += " next"; nextMarked = true; }
+            big = days; label = (days === 1 ? "day" : "days") + " till " + ev.name;
+        }
+        return `<div class="${cls}">
+            <div class="date-top"><span class="date-days">${big}</span><span class="date-emoji">${ev.emoji}</span></div>
+            <div class="date-label">${label}</div>
+            <div class="date-sub">${fmt(ev.date)}</div>
+        </div>`;
+    }).join("");
+}
+renderDates();
+setInterval(() => renderDates(), 60 * 60 * 1000);
+
+loadData();
+</script>
+
+</body>
+</html>
