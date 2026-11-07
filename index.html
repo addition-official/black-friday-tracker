@@ -30,6 +30,8 @@
     --display: "Bricolage Grotesque", Georgia, serif;
     --body: "Figtree", "Segoe UI", sans-serif;
     --mono: "JetBrains Mono", ui-monospace, monospace;
+    --cali: #5ab4e6;
+    --cali-bg: rgba(90,180,230,0.13);
 }
 body.light {
     --bg: #f5eee4;
@@ -46,6 +48,8 @@ body.light {
     --ordered-bg: rgba(242,169,59,0.16);
     --arrived: #2b8f4e;
     --arrived-bg: rgba(43,143,78,0.11);
+    --cali: #1f7fb5;
+    --cali-bg: rgba(31,127,181,0.10);
     --shadow: 0 1px 2px rgba(38,32,28,0.06), 0 8px 24px rgba(38,32,28,0.08);
 }
 
@@ -171,6 +175,24 @@ a { color: inherit; }
 .filter-btn:hover:not(.active) { color: var(--ink); }
 .filter-btn.active { background: var(--ink); color: var(--bg); }
 .filter-btn.active .n { background: var(--accent); color: #fff; }
+#places { display: flex; justify-content: center; gap: 6px; margin-top: 10px; flex-wrap: wrap; }
+.place-btn {
+    background: transparent; border: 1.5px solid var(--line); border-radius: 999px;
+    padding: 6px 13px; font-size: 13px; font-weight: 700; color: var(--muted);
+    display: inline-flex; align-items: center; gap: 6px;
+}
+.place-btn .n { font-family: var(--mono); font-size: 11px; opacity: 0.7; }
+.place-btn:hover:not(.active) { color: var(--ink); border-color: var(--muted); }
+.place-btn.active { border-color: var(--ink); color: var(--ink); background: var(--surface); }
+.place-btn.active.california { border-color: var(--cali); color: var(--cali); }
+.home-chip {
+    font-family: var(--body); font-size: 11.5px; font-weight: 700; letter-spacing: 0;
+    padding: 3px 8px; border-radius: 6px; white-space: nowrap;
+    background: var(--surface-2); color: var(--muted);
+}
+.home-chip.california { background: var(--cali-bg); color: var(--cali); }
+.ship-tag { font-weight: 700; font-size: 12px; padding: 2px 7px; border-radius: 6px; background: var(--surface-2); color: var(--muted); }
+.ship-tag.california { background: var(--cali-bg); color: var(--cali); }
 #hint { font-size: 12.5px; color: var(--muted); text-align: center; margin: 12px 0 20px; }
 
 /* ============ CATEGORIES ============ */
@@ -193,9 +215,9 @@ a { color: inherit; }
 }
 .cat-arrow { width: 14px; font-size: 10px; color: var(--muted); transition: transform 0.2s; display: inline-block; }
 .collapsed .cat-arrow { transform: rotate(-90deg); }
-.cat-name { flex: 1; font-family: var(--display); font-size: 21px; font-weight: 700; letter-spacing: -0.4px; }
+.cat-name { flex: 0 1 auto; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-family: var(--display); font-size: 21px; font-weight: 700; letter-spacing: -0.4px; }
 .cat-name.done { opacity: 0.45; text-decoration: line-through; }
-.cat-count { font-family: var(--mono); font-size: 11px; color: var(--muted); }
+.cat-count { font-family: var(--mono); font-size: 11px; color: var(--muted); margin-left: auto; }
 .add-item-btn {
     border: none;
     border-radius: 9px;
@@ -206,6 +228,8 @@ a { color: inherit; }
     color: #fff;
 }
 .add-item-btn:hover { filter: brightness(1.08); }
+.add-item-btn, .more-btn { white-space: nowrap; flex-shrink: 0; }
+.cat-name { flex-shrink: 1; }
 .more-btn {
     border: 1px solid var(--line); background: transparent; border-radius: 9px;
     height: 32px; padding: 0 11px; font-size: 13px; font-weight: 700; color: var(--muted);
@@ -404,6 +428,8 @@ textarea { height: 86px; resize: vertical; }
 .row2 > div { flex: 1; min-width: 0; }
 
 .seg { display: flex; gap: 6px; }
+.seg.places button.on { border-color: var(--ink); color: var(--ink); background: var(--surface-2); }
+.seg.places button.on.california { border-color: var(--cali); color: var(--cali); background: var(--cali-bg); }
 .seg button {
     flex: 1;
     display: inline-flex; align-items: center; justify-content: center; gap: 7px;
@@ -479,6 +505,10 @@ textarea { height: 86px; resize: vertical; }
     .item { gap: 10px; padding-right: 10px; }
     .thumb { width: 42px; height: 42px; }
     .cat-count { display: none; }
+    .hide-sm { display: none; }
+    .category-header { gap: 8px; }
+    .home-chip { padding: 3px 6px; }
+    .add-item-btn { margin-left: auto; }
 }
 </style>
 </head>
@@ -498,10 +528,11 @@ textarea { height: 86px; resize: vertical; }
     </div>
 
     <div id="filters"></div>
+    <div id="places"></div>
     <div id="hint">tap an item to open it • tap its status to change it</div>
 
     <div id="board"></div>
-    <button id="addCategory" class="icon-btn">+ new category (like "tech" or "kitchen")</button>
+    <button id="addCategory" class="icon-btn">+ add a person (or a group like "misc")</button>
 </div>
 
 <!-- ITEM PANEL: everything about one item -->
@@ -517,6 +548,12 @@ textarea { height: 86px; resize: vertical; }
             <button type="button" data-st="want"><span class="dot"></span>want</button>
             <button type="button" data-st="ordered"><span class="dot"></span>ordered</button>
             <button type="button" data-st="arrived"><span class="dot"></span>arrived</button>
+        </div>
+
+        <label class="field-label">ships to</label>
+        <div class="seg places" id="fShip">
+            <button type="button" data-pl="houston">🏠 houston</button>
+            <button type="button" data-pl="california">🌴 california</button>
         </div>
 
         <div class="row2">
@@ -559,9 +596,15 @@ textarea { height: 86px; resize: vertical; }
 <!-- CATEGORY PANEL: add / rename / delete -->
 <div id="catModal" class="modal-overlay">
     <div class="modal-box">
-        <h3 id="catModalTitle">new category</h3>
-        <label class="field-label">name</label>
-        <input id="catName" placeholder="e.g. tech, kitchen, gifts...">
+        <h3 id="catModalTitle">new person</h3>
+        <label class="field-label">who's it for?</label>
+        <input id="catName" placeholder="e.g. me, mom, dad, misc...">
+        <label class="field-label">lives in</label>
+        <div class="seg places" id="catHome">
+            <button type="button" data-pl="houston">🏠 houston</button>
+            <button type="button" data-pl="california">🌴 california</button>
+        </div>
+        <div class="field-help">their stuff ships here unless you change it on an item.</div>
         <div class="modal-actions">
             <button type="button" id="catDelete" class="btn-danger">delete</button>
             <button type="button" id="catSave" class="btn-primary">save</button>
@@ -615,6 +658,9 @@ const NEXT_LABEL = { want: "mark as ordered", ordered: "mark as arrived", arrive
 
 let data = { lists: { black_friday: [], my_stuff: [] } };
 let filter = "all";
+let place = "all";        // "all", "houston" or "california"
+let draftShip = "houston";
+let catHomeDraft = "houston";
 let editing = null;        // { ci, ii } for an existing item, { ci, ii: null } for a new one
 let draft = null;          // working copy of the item being edited
 let editingCat = null;     // category index being renamed, or null for a new one
@@ -623,6 +669,11 @@ let sortables = [];
 let firstPaint = true;   // only animate cards in on the first load
 
 const cats = () => data.lists.black_friday;
+const PLACES = { houston: { emoji: "🏠", label: "houston" }, california: { emoji: "🌴", label: "california" } };
+const homeOf = (cat) => cat && cat.home === "california" ? "california" : "houston";
+const shipOf = (it, cat) => PLACES[it.shipTo] ? it.shipTo : homeOf(cat);
+const matches = (it, cat, st = filter, pl = place) => (st === "all" || it.status === st) && (pl === "all" || shipOf(it, cat) === pl);
+const filtered = () => filter !== "all" || place !== "all";
 
 /* --- SMALL HELPERS --- */
 const $ = (id) => document.getElementById(id);
@@ -731,12 +782,13 @@ function migrate() {
         }
         if (!Array.isArray(obj.images)) obj.images = [];
         if (obj.image) { obj.images.push(obj.image); delete obj.image; }
-        for (const k of ["price", "store", "link", "tracking", "notes"]) if (typeof obj[k] !== "string") obj[k] = obj[k] ? String(obj[k]) : "";
+        for (const k of ["price", "store", "link", "tracking", "notes", "shipTo"]) if (typeof obj[k] !== "string") obj[k] = obj[k] ? String(obj[k]) : "";
         delete obj.checked;
         return obj;
     };
 
     data.lists.black_friday.forEach(cat => {
+        if (!PLACES[cat.home]) cat.home = "houston";
         cat.items = (cat.items || []).map(it => fixItem(it, false));
         if (cat.collapsed !== undefined) { cat._collapsed = !!cat.collapsed || !!cat._collapsed; delete cat.collapsed; }
     });
@@ -745,7 +797,7 @@ function migrate() {
     const old = Array.isArray(data.lists.my_stuff) ? data.lists.my_stuff : [];
     old.forEach(store => {
         const items = (store.items || []).map(it => fixItem(it, true, store.name));
-        if (items.length) data.lists.black_friday.push({ name: store.name + " orders", items, _collapsed: false });
+        if (items.length) data.lists.black_friday.push({ name: store.name + " orders", home: "houston", items, _collapsed: false });
     });
     data.lists.my_stuff = [];
 
@@ -764,20 +816,29 @@ async function saveData() {
 
 /* --- RENDER --- */
 function counts() {
-    const c = { all: 0, want: 0, ordered: 0, arrived: 0 };
-    cats().forEach(cat => cat.items.forEach(it => { c.all++; c[it.status]++; }));
-    return c;
+    // status counts respect the place filter, place counts respect the status filter
+    const c = { all: 0, want: 0, ordered: 0, arrived: 0 }, p = { all: 0, houston: 0, california: 0 };
+    cats().forEach(cat => cat.items.forEach(it => {
+        if (matches(it, cat, "all", place)) { c.all++; c[it.status]++; }
+        if (matches(it, cat, filter, "all")) { p.all++; p[shipOf(it, cat)]++; }
+    }));
+    return { c, p };
 }
 
 function renderFilters() {
-    const c = counts();
+    const { c, p } = counts();
     const labels = { all: "all", want: "want", ordered: "ordered", arrived: "arrived" };
     $("filters").innerHTML = Object.keys(labels).map(k =>
         `<button class="filter-btn ${filter === k ? "active" : ""}" onclick="setFilter('${k}')">${labels[k]}<span class="n">${c[k]}</span></button>`
     ).join("");
+    const pl = { all: "everywhere", houston: "🏠 houston", california: "🌴 california" };
+    $("places").innerHTML = Object.keys(pl).map(k =>
+        `<button class="place-btn ${k} ${place === k ? "active" : ""}" onclick="setPlace('${k}')" title="${k === "all" ? "show both addresses" : "only stuff shipping to " + k}">${pl[k]}<span class="n">${p[k]}</span></button>`
+    ).join("");
 }
 
 function setFilter(f) { filter = f; render(); }
+function setPlace(p) { place = p; render(); }
 
 function itemRow(it, ci, ii) {
     const nPics = (it.images || []).length;
@@ -790,6 +851,8 @@ function itemRow(it, ci, ii) {
     const meta = [];
     if (it.price) meta.push(`<span class="price">${esc(fmtPrice(it.price))}</span>`);
     if (it.store) meta.push(`<span class="meta-bit">from ${esc(it.store)}</span>`);
+    const cat = cats()[ci], ship = shipOf(it, cat);
+    if (ship !== homeOf(cat)) meta.unshift(`<span class="ship-tag ${ship}" title="ships somewhere other than ${esc(cat.name)}'s home">→ ${PLACES[ship].emoji} ${PLACES[ship].label}</span>`);
     const track = safeUrl(it.tracking);   // only when a link was pasted instead of a number
     if (!track && isTrackNumber(it.tracking) && it.status === "ordered") {
         const cl = carrierLink(it.tracking, it.trackInfo?.courier);
@@ -816,31 +879,32 @@ function render() {
     renderFilters();
     const board = $("board");
     const list = cats();
-    const canDrag = filter === "all";
+    const canDrag = !filtered();
 
     if (list.length === 0) {
-        board.innerHTML = `<div id="emptyState"><b>nothing here yet</b>make a category below (like "tech"), then add the stuff you want to it</div>`;
+        board.innerHTML = `<div id="emptyState"><b>nothing here yet</b>add a person below (like "me" or "dad"), then add what they want</div>`;
         initSorting();
         return;
     }
 
     let shownAny = false;
     board.innerHTML = list.map((cat, ci) => {
-        const visible = cat.items.map((it, ii) => ({ it, ii })).filter(x => filter === "all" || x.it.status === filter);
-        if (filter !== "all" && visible.length === 0) return "";
+        const visible = cat.items.map((it, ii) => ({ it, ii })).filter(x => matches(x.it, cat));
+        if (filtered() && visible.length === 0) return "";
         shownAny = true;
         const allArrived = cat.items.length > 0 && cat.items.every(it => it.status === "arrived");
         const arrivedN = cat.items.filter(it => it.status === "arrived").length;
         const countText = cat.items.length === 0 ? "" : `${arrivedN} of ${cat.items.length} here`;
-        const collapsed = cat._collapsed && filter === "all";
+        const collapsed = cat._collapsed && !filtered();
         return `<div class="category ${collapsed ? "collapsed" : ""} ${canDrag ? "" : "no-drag"} ${firstPaint ? "enter" : ""}" style="${firstPaint ? `animation-delay:${ci * 70}ms` : ""}" data-ci="${ci}">
             <div class="category-header" onclick="toggleCat(${ci})">
                 <span class="drag-handle cat-handle" onclick="event.stopPropagation()" title="drag to reorder">⋮⋮</span>
                 <span class="cat-arrow">▼</span>
                 <span class="cat-name ${allArrived ? "done" : ""}">${esc(cat.name)}</span>
+                <span class="home-chip ${homeOf(cat)}" title="${esc(cat.name)}'s stuff ships to ${homeOf(cat)}">${PLACES[homeOf(cat)].emoji}<span class="hide-sm"> ${homeOf(cat)}</span></span>
                 <span class="cat-count">${countText}</span>
-                <button class="add-item-btn" onclick="event.stopPropagation(); openItem(${ci}, null)">+ add item</button>
-                <button class="more-btn" title="rename or delete this category" onclick="event.stopPropagation(); openCat(${ci})">edit</button>
+                <button class="add-item-btn" onclick="event.stopPropagation(); openItem(${ci}, null)">+ add<span class="hide-sm"> item</span></button>
+                <button class="more-btn" title="rename, change address, or delete" onclick="event.stopPropagation(); openCat(${ci})">edit</button>
             </div>
             <div class="items" id="items-${ci}">
                 ${visible.length ? visible.map(x => itemRow(x.it, ci, x.ii)).join("") : `<div class="empty-cat">nothing here yet, tap + add</div>`}
@@ -848,7 +912,10 @@ function render() {
         </div>`;
     }).join("");
 
-    if (!shownAny) board.innerHTML = `<div id="emptyState"><b>all clear</b>nothing is "${filter}" right now</div>`;
+    if (!shownAny) {
+        const what = [filter !== "all" ? `"${filter}"` : "", place !== "all" ? `shipping to ${place}` : ""].filter(Boolean).join(" and ");
+        board.innerHTML = `<div id="emptyState"><b>all clear</b>nothing ${what} right now</div>`;
+    }
     if (list.length) firstPaint = false;
     initSorting();
 }
@@ -902,7 +969,7 @@ async function setStatus(ci, ii, st) {
 
 /* --- CATEGORIES --- */
 function toggleCat(ci) {
-    if (filter !== "all") return;
+    if (filtered()) return;
     cats()[ci]._collapsed = !cats()[ci]._collapsed;
     render();
     saveData();
@@ -911,21 +978,33 @@ function toggleCat(ci) {
 function openCat(ci) {
     editingCat = ci;
     const isNew = ci === null;
-    $("catModalTitle").textContent = isNew ? "new category" : "edit category";
+    $("catModalTitle").textContent = isNew ? "new person" : "edit " + cats()[ci].name;
     $("catName").value = isNew ? "" : cats()[ci].name;
+    catHomeDraft = isNew ? "houston" : homeOf(cats()[ci]);
+    paintSeg("catHome", catHomeDraft);
     $("catDelete").style.display = isNew ? "none" : "block";
     $("catModal").style.display = "flex";
     $("catName").focus();
 }
 
 $("addCategory").onclick = () => openCat(null);
+function paintSeg(id, val) { document.querySelectorAll(`#${id} button`).forEach(b => b.className = b.dataset.pl + (b.dataset.pl === val ? " on" : "")); }
+document.querySelectorAll("#catHome button").forEach(b => b.onclick = () => { catHomeDraft = b.dataset.pl; paintSeg("catHome", catHomeDraft); });
+document.querySelectorAll("#fShip button").forEach(b => b.onclick = () => { draftShip = b.dataset.pl; paintSeg("fShip", draftShip); });
 $("catName").onkeydown = (e) => { if (e.key === "Enter") $("catSave").click(); };
 
 $("catSave").onclick = async () => {
     const name = $("catName").value.trim();
     if (!name) { $("catName").focus(); return; }
-    if (editingCat === null) cats().push({ name, items: [], _collapsed: false });
-    else cats()[editingCat].name = name;
+    if (editingCat === null) cats().push({ name, home: catHomeDraft, items: [], _collapsed: false });
+    else {
+        const cat = cats()[editingCat];
+        const oldHome = homeOf(cat);
+        cat.name = name;
+        cat.home = catHomeDraft;
+        // items that were explicitly sent to the new home now just follow the person
+        if (oldHome !== catHomeDraft) cat.items.forEach(it => { if (it.shipTo === catHomeDraft) it.shipTo = ""; });
+    }
     $("catModal").style.display = "none";
     render();
     await saveData();
@@ -948,7 +1027,9 @@ function openItem(ci, ii) {
     draft = isNew
         ? { name: "", status: "want", price: "", store: "", link: "", tracking: "", notes: "", images: [] }
         : JSON.parse(JSON.stringify(cats()[ci].items[ii]));
-    $("itemModalTitle").textContent = isNew ? `add to ${cats()[ci].name}` : "item details";
+    $("itemModalTitle").textContent = isNew ? `add for ${cats()[ci].name}` : "item details";
+    draftShip = isNew ? homeOf(cats()[ci]) : shipOf(draft, cats()[ci]);
+    paintSeg("fShip", draftShip);
     $("fName").value = draft.name;
     $("fPrice").value = draft.price;
     $("fStore").value = draft.store;
@@ -1003,6 +1084,8 @@ $("fSave").onclick = async () => {
     const name = $("fName").value.trim();
     if (!name) { $("fName").focus(); toast("give it a name first"); return; }
     if ($("fImgUrl").value.trim()) addDraftImage();   // don't lose a pasted-but-not-added picture
+    // store nothing when it ships to the person's home, so changing their home moves it too
+    draft.shipTo = draftShip === homeOf(cats()[editing.ci]) ? "" : draftShip;
     Object.assign(draft, {
         name,
         price: $("fPrice").value.trim(),
@@ -1194,7 +1277,7 @@ $("lightbox").onclick = (e) => { if (e.target.id === "lightbox") $("lightbox").s
 function initSorting() {
     sortables.forEach(s => s.destroy());
     sortables = [];
-    if (filter !== "all" || typeof Sortable === "undefined") return;
+    if (filtered() || typeof Sortable === "undefined") return;
 
     sortables.push(new Sortable($("board"), {
         handle: ".cat-handle",
