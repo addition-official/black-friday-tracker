@@ -285,6 +285,11 @@ a { color: inherit; }
 .track-line.m-pending, .track-line.m-info_received, .track-line.checking { color: var(--muted); }
 @keyframes blink { 50% { opacity: 0.25; } }
 
+.link-row { display: flex; gap: 6px; margin-bottom: 8px; }
+.link-row .lk-label { flex: 0 0 34%; }
+.link-row .lk-url { flex: 1; min-width: 0; }
+@media (max-width: 520px) { .link-row { flex-wrap: wrap; } .link-row .lk-label { flex: 1 1 calc(100% - 50px); } .link-row .lk-url { flex: 1 1 100%; order: 3; } }
+.chip-link.more { color: var(--muted); border-color: var(--line); background: transparent; }
 .pkg { margin-bottom: 10px; border: 1px solid var(--line); border-radius: 12px; padding: 10px; background: var(--bg); }
 .pkg input { background: var(--surface); }
 .pkg .pkg-track { margin-top: 8px; font-family: var(--mono); font-size: 13px; }
@@ -632,8 +637,10 @@ body.touring { padding-bottom: 75vh; }
             <button type="button" data-pl="california">🌴 california</button>
         </div>
 
-        <label class="field-label">link to the product</label>
-        <input id="fLink" placeholder="https://... (where you're thinking of buying it)">
+        <label class="field-label">links to it</label>
+        <div id="fLinks"></div>
+        <button type="button" id="fAddLink" class="add-pkg">+ add another link</button>
+        <div class="field-help">comparing a few? add a link for each one. the name is optional, like "navy slim" or "the $25 ones".</div>
 
         <label class="field-label">notes</label>
         <textarea id="fNotes" placeholder="color, size, which stores to check, deal code..."></textarea>
@@ -775,6 +782,14 @@ const filtered = () => filter !== "all" || place !== "all";
 const $ = (id) => document.getElementById(id);
 const esc = (s) => String(s ?? "").replace(/[&<>"']/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
 const safeUrl = (u) => /^https?:\/\//i.test(String(u || "").trim()) ? String(u).trim() : "";
+// "https://www.target.com/p/..." -> "target"
+function linkName(l) {
+    if (l.label) return l.label;
+    try {
+        const parts = new URL(l.url).hostname.replace(/^www\./, "").split(".");
+        return parts.length >= 2 ? parts[parts.length - 2] : parts[0];
+    } catch { return "link"; }
+}
 const fmtPrice = (p) => { p = String(p || "").trim(); return !p ? "" : /^[\d.,]+$/.test(p) ? "$" + p : p; };
 
 function toast(msg) {
@@ -886,6 +901,10 @@ function migrate() {
         if (!Array.isArray(obj.images)) obj.images = [];
         if (obj.image) { obj.images.push(obj.image); delete obj.image; }
         for (const k of ["price", "store", "link", "notes", "shipTo"]) if (typeof obj[k] !== "string") obj[k] = obj[k] ? String(obj[k]) : "";
+        // several links per item, so you can compare options
+        if (!Array.isArray(obj.links)) obj.links = obj.link ? [{ url: obj.link, label: "" }] : [];
+        obj.links = obj.links.filter(l => l && String(l.url || "").trim()).map(l => ({ url: String(l.url).trim(), label: String(l.label || "").trim() }));
+        delete obj.link;
         // one item can arrive in several packages, each with its own tracking number
         if (!Array.isArray(obj.packages)) {
             obj.packages = obj.tracking ? [{ tracking: String(obj.tracking), ...(obj.trackInfo ? { trackInfo: obj.trackInfo } : {}) }] : [];
@@ -983,8 +1002,12 @@ function itemRow(it, ci, ii) {
         const done = pk.filter(p => p.trackInfo?.milestone === "delivered").length;
         meta.push(`<span class="pkg-count ${done === pk.length ? "all" : ""}">📦 ${done} of ${pk.length} delivered</span>`);
     }
-    const link = safeUrl(it.link);
-    if (link && it.status === "want") meta.push(`<a class="chip-link view" href="${esc(link)}" target="_blank" rel="noopener" onclick="event.stopPropagation()">view product <span class="arr">↗</span></a>`);
+    if (it.status === "want") {
+        const links = (it.links || []).filter(l => safeUrl(l.url));
+        const SHOW = 4;
+        links.slice(0, SHOW).forEach(l => meta.push(`<a class="chip-link view" href="${esc(safeUrl(l.url))}" target="_blank" rel="noopener" onclick="event.stopPropagation()" title="${esc(l.url)}">${esc(linkName(l))} <span class="arr">↗</span></a>`));
+        if (links.length > SHOW) meta.push(`<span class="chip-link view more" title="tap the item to see all links">+${links.length - SHOW} more</span>`);
+    }
 
     return `<div class="item st-${it.status}" onclick="openItem(${ci}, ${ii})">
         <span class="drag-handle" onclick="event.stopPropagation()" title="drag to reorder">⋮⋮</span>
@@ -1149,13 +1172,15 @@ function openItem(ci, ii) {
     editing = { ci, ii };
     const isNew = ii === null;
     draft = isNew
-        ? { name: "", status: "want", price: "", store: "", link: "", packages: [], notes: "", images: [] }
+        ? { name: "", status: "want", price: "", links: [], packages: [], notes: "", images: [] }
         : JSON.parse(JSON.stringify(cats()[ci].items[ii]));
     $("itemModalTitle").textContent = isNew ? `add for ${cats()[ci].name}` : "item details";
     draftShip = isNew ? homeOf(cats()[ci]) : shipOf(draft, cats()[ci]);
     paintSeg("fShip", draftShip);
     $("fName").value = draft.name;
-    $("fLink").value = draft.link;
+    draft.links = (draft.links || []).map(l => ({ ...l }));
+    if (!draft.links.length) draft.links.push({ url: "", label: "" });   // always show one box
+    paintLinks();
     $("fNotes").value = draft.notes;
     $("fImgUrl").value = "";
     $("fDelete").style.display = isNew ? "none" : "block";
@@ -1208,6 +1233,31 @@ $("fImgUrl").onkeydown = (e) => { if (e.key === "Enter") addDraftImage(); };
 
 function closeItem() { $("itemModal").style.display = "none"; editing = null; draft = null; }
 $("fCancel").onclick = closeItem;
+function paintLinks() {
+    if (!draft) return;
+    const multi = draft.links.length > 1;
+    $("fLinks").innerHTML = draft.links.map((l, i) => `
+        <div class="link-row">
+            <input class="lk-label" data-i="${i}" value="${esc(l.label)}" placeholder="name (optional)" autocomplete="off">
+            <input class="lk-url" data-i="${i}" value="${esc(l.url)}" placeholder="https://..." autocomplete="off" spellcheck="false">
+            ${multi ? `<button type="button" class="pkg-del" title="remove this link" onclick="removeLink(${i})">×</button>` : ""}
+        </div>`).join("");
+    document.querySelectorAll("#fLinks .lk-label").forEach(inp => inp.oninput = () => { draft.links[+inp.dataset.i].label = inp.value; });
+    document.querySelectorAll("#fLinks .lk-url").forEach(inp => inp.oninput = () => { draft.links[+inp.dataset.i].url = inp.value; });
+}
+function removeLink(i) {
+    draft.links.splice(i, 1);
+    if (!draft.links.length) draft.links.push({ url: "", label: "" });
+    paintLinks();
+}
+$("fAddLink").onclick = () => {
+    if (!draft) return;
+    draft.links.push({ url: "", label: "" });
+    paintLinks();
+    const boxes = document.querySelectorAll("#fLinks .lk-label");
+    boxes[boxes.length - 1].focus();
+};
+
 $("fAddPkg").onclick = () => {
     if (!draft) return;
     draft.packages.push({ store: "", tracking: "" });
@@ -1224,7 +1274,6 @@ $("fSave").onclick = async () => {
     draft.shipTo = draftShip === homeOf(cats()[editing.ci]) ? "" : draftShip;
     Object.assign(draft, {
         name,
-        link: $("fLink").value.trim(),
         notes: $("fNotes").value
     });
     const { ci, ii } = editing;
@@ -1236,6 +1285,7 @@ $("fSave").onclick = async () => {
         .filter(p => p.store || p.tracking)
         .filter(p => !p.tracking || (!seen.has(normNum(p.tracking)) && seen.add(normNum(p.tracking))))
         .map(p => { const prev = p.tracking && old.find(o => normNum(o.tracking) === normNum(p.tracking)); return prev?.trackInfo ? { ...p, trackInfo: prev.trackInfo } : p; });
+    draft.links = draft.links.map(l => ({ url: String(l.url || "").trim(), label: String(l.label || "").trim() })).filter(l => l.url);
     const saved = draft;
     if (ii === null) cats()[ci].items.push(draft);
     else cats()[ci].items[ii] = draft;
@@ -1572,12 +1622,12 @@ function tourDemo() {
     const day = (n) => { const d = new Date(); d.setDate(d.getDate() + n); return d.toISOString().slice(0, 10); };
     return { lists: { my_stuff: [], black_friday: [
         { name: "grandma (example)", home: "houston", _collapsed: false, items: [
-            { name: "warm socks", status: "want", notes: "size medium, any color", images: [], packages: [], link: "", shipTo: "" },
-            { name: "reading glasses", status: "ordered", notes: "", images: [], link: "", shipTo: "", packages: [
+            { name: "warm socks", status: "want", notes: "size medium, any color", images: [], packages: [], links: [], shipTo: "" },
+            { name: "reading glasses", status: "ordered", notes: "", images: [], links: [], shipTo: "", packages: [
                 { store: "amazon", tracking: "TBA000000000000", trackInfo: { milestone: "in_transit", label: "on the way", eta: day(2), latest: { location: "Houston, TX" }, events: [], checkedAt: Date.now() } } ] },
-            { name: "tea kettle", status: "arrived", notes: "", images: [], link: "", shipTo: "", packages: [] } ] },
+            { name: "tea kettle", status: "arrived", notes: "", images: [], links: [], shipTo: "", packages: [] } ] },
         { name: "dad (example)", home: "california", _collapsed: false, items: [
-            { name: "slippers", status: "want", notes: "", images: [], packages: [], link: "", shipTo: "" } ] }
+            { name: "slippers", status: "want", notes: "", images: [], packages: [], links: [], shipTo: "" } ] }
     ] } };
 }
 
