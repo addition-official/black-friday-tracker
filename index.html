@@ -269,6 +269,8 @@ a { color: inherit; }
     border: 2px solid var(--surface);
     white-space: nowrap;
 }
+.panel-split { display: flex; align-items: center; gap: 10px; margin: 22px 0 2px; color: var(--muted); font-family: var(--mono); font-size: 10.5px; letter-spacing: 1.5px; text-transform: uppercase; }
+.panel-split::before, .panel-split::after { content: ""; flex: 1; border-top: 1px dashed var(--line); }
 .field-help { font-size: 11.5px; color: var(--muted); margin-top: 6px; }
 .track-line {
     display: block;
@@ -283,7 +285,23 @@ a { color: inherit; }
 .track-line.m-pending, .track-line.m-info_received, .track-line.checking { color: var(--muted); }
 @keyframes blink { 50% { opacity: 0.25; } }
 
-#fTimeline:empty { display: none; }
+.pkg { margin-bottom: 10px; border: 1px solid var(--line); border-radius: 12px; padding: 10px; background: var(--bg); }
+.pkg input { background: var(--surface); }
+.pkg .pkg-track { margin-top: 8px; font-family: var(--mono); font-size: 13px; }
+.pkg .timeline { background: var(--surface); }
+.pkg-row { display: flex; gap: 6px; align-items: center; }
+.pkg-row input { flex: 1; }
+.pkg-num { font-family: var(--mono); font-size: 11px; color: var(--muted); width: 22px; text-align: center; flex-shrink: 0; }
+.pkg-del { background: transparent; border: 1px solid var(--line); border-radius: 9px; width: 40px; height: 42px; color: var(--muted); font-size: 16px; flex-shrink: 0; }
+.pkg-del:hover { color: var(--accent); border-color: var(--accent); }
+.pkg-tl:empty { display: none; }
+.add-pkg { background: transparent; border: none; color: var(--accent); font-weight: 700; font-size: 13px; padding: 2px 0; }
+.add-pkg:hover { text-decoration: underline; }
+.pkg-count { font-weight: 700; font-size: 12px; color: var(--ordered); }
+.pkg-count.all { color: var(--arrived); }
+.track-line .pkg-tag { color: var(--ink); margin-right: 7px; font-weight: 700; }
+.mini-track { color: inherit; font-weight: 700; text-decoration: none; border-bottom: 1px dotted currentColor; margin-left: 6px; white-space: nowrap; }
+.mini-track:hover { border-bottom-style: solid; }
 .timeline { margin-top: 10px; background: var(--bg); border: 1px solid var(--line); border-radius: 12px; padding: 12px 14px; }
 .tl-head { display: flex; align-items: center; justify-content: space-between; gap: 8px; margin-bottom: 4px; }
 .tl-status { font-weight: 800; font-size: 14px; display: flex; align-items: center; gap: 7px; }
@@ -422,7 +440,6 @@ input, textarea {
 }
 input::placeholder, textarea::placeholder { color: var(--muted); opacity: 0.7; }
 input:focus, textarea:focus { outline: 2px solid var(--accent); outline-offset: -1px; border-color: transparent; }
-#fPrice { font-family: var(--mono); }
 textarea { height: 86px; resize: vertical; }
 .row2 { display: flex; gap: 10px; }
 .row2 > div { flex: 1; min-width: 0; }
@@ -543,6 +560,27 @@ textarea { height: 86px; resize: vertical; }
         <label class="field-label">what is it?</label>
         <input id="fName" placeholder="e.g. airpods pro">
 
+        <label class="field-label">ships to</label>
+        <div class="seg places" id="fShip">
+            <button type="button" data-pl="houston">🏠 houston</button>
+            <button type="button" data-pl="california">🌴 california</button>
+        </div>
+
+        <label class="field-label">link to the product</label>
+        <input id="fLink" placeholder="https://... (where you're thinking of buying it)">
+
+        <label class="field-label">notes</label>
+        <textarea id="fNotes" placeholder="colour, size, which stores to check, deal code..."></textarea>
+
+        <label class="field-label">pictures</label>
+        <div id="fGallery" class="gallery"></div>
+        <div class="inline-add">
+            <input id="fImgUrl" placeholder="paste an image link...">
+            <button type="button" id="fAddImg" class="small-btn">add</button>
+        </div>
+
+        <div class="panel-split"><span>once you've bought it</span></div>
+
         <label class="field-label">status</label>
         <div class="seg" id="fStatus">
             <button type="button" data-st="want"><span class="dot"></span>want</button>
@@ -550,39 +588,12 @@ textarea { height: 86px; resize: vertical; }
             <button type="button" data-st="arrived"><span class="dot"></span>arrived</button>
         </div>
 
-        <label class="field-label">ships to</label>
-        <div class="seg places" id="fShip">
-            <button type="button" data-pl="houston">🏠 houston</button>
-            <button type="button" data-pl="california">🌴 california</button>
-        </div>
-
-        <div class="row2">
-            <div>
-                <label class="field-label">price</label>
-                <input id="fPrice" placeholder="$">
-            </div>
-            <div>
-                <label class="field-label">store</label>
-                <input id="fStore" placeholder="amazon, target...">
-            </div>
-        </div>
-
-        <label class="field-label">link to the product</label>
-        <input id="fLink" placeholder="https://...">
-
-        <label class="field-label">tracking number (once it's ordered)</label>
-        <input id="fTracking" placeholder="e.g. 1Z999AA10123456784 or TBA123456789000" autocomplete="off" spellcheck="false">
-        <div class="field-help">paste the number from the shipping email and it'll track itself. a tracking link works too.</div>
-        <div id="fTimeline"></div>
-
-        <label class="field-label">notes</label>
-        <textarea id="fNotes" placeholder="colour, size, deal code, anything..."></textarea>
-
-        <label class="field-label">pictures</label>
-        <div id="fGallery" class="gallery"></div>
-        <div class="inline-add">
-            <input id="fImgUrl" placeholder="paste an image link...">
-            <button type="button" id="fAddImg" class="small-btn">add</button>
+        <div id="fWantHint" class="field-help">when you buy it, tap <b>ordered</b> and add the store and tracking number.</div>
+        <div id="fOrders">
+            <label class="field-label">where you ordered it</label>
+            <div id="fPackages"></div>
+            <button type="button" id="fAddPkg" class="add-pkg">+ add another order</button>
+            <div class="field-help">got it from more than one store? add each one. the tracking number can wait till the shipping email comes, then it tracks itself.</div>
         </div>
 
         <div class="modal-actions">
@@ -782,7 +793,21 @@ function migrate() {
         }
         if (!Array.isArray(obj.images)) obj.images = [];
         if (obj.image) { obj.images.push(obj.image); delete obj.image; }
-        for (const k of ["price", "store", "link", "tracking", "notes", "shipTo"]) if (typeof obj[k] !== "string") obj[k] = obj[k] ? String(obj[k]) : "";
+        for (const k of ["price", "store", "link", "notes", "shipTo"]) if (typeof obj[k] !== "string") obj[k] = obj[k] ? String(obj[k]) : "";
+        // one item can arrive in several packages, each with its own tracking number
+        if (!Array.isArray(obj.packages)) {
+            obj.packages = obj.tracking ? [{ tracking: String(obj.tracking), ...(obj.trackInfo ? { trackInfo: obj.trackInfo } : {}) }] : [];
+        }
+        obj.packages = obj.packages
+            .filter(p => p && (String(p.tracking || "").trim() || String(p.store || "").trim()))
+            .map(p => ({ ...p, store: String(p.store || "").trim(), tracking: String(p.tracking || "").trim() }));
+        // the store now lives on each order, so one item can be bought from several stores
+        if (obj.store) {
+            if (obj.packages.length) obj.packages.forEach(p => { if (!p.store) p.store = obj.store; });
+            else obj.packages = [{ store: obj.store, tracking: "" }];
+        }
+        delete obj.store;
+        delete obj.tracking; delete obj.trackInfo;
         delete obj.checked;
         return obj;
     };
@@ -850,15 +875,21 @@ function itemRow(it, ci, ii) {
         : "";
     const meta = [];
     if (it.price) meta.push(`<span class="price">${esc(fmtPrice(it.price))}</span>`);
-    if (it.store) meta.push(`<span class="meta-bit">from ${esc(it.store)}</span>`);
+    const pkAll = it.packages || [];
+    if (it.status !== "want" && pkAll.length === 1 && pkAll[0].store) meta.push(`<span class="meta-bit">from ${esc(pkAll[0].store)}</span>`);
     const cat = cats()[ci], ship = shipOf(it, cat);
     if (ship !== homeOf(cat)) meta.unshift(`<span class="ship-tag ${ship}" title="ships somewhere other than ${esc(cat.name)}'s home">→ ${PLACES[ship].emoji} ${PLACES[ship].label}</span>`);
-    const track = safeUrl(it.tracking);   // only when a link was pasted instead of a number
-    if (!track && isTrackNumber(it.tracking) && it.status === "ordered") {
-        const cl = carrierLink(it.tracking, it.trackInfo?.courier);
+    const pk = pkAll;
+    if (it.status === "ordered" && pk.length === 1 && pk[0].tracking) {
+        // one order: a proper button
+        const lnk = safeUrl(pk[0].tracking);
+        const cl = lnk ? { name: "", url: lnk } : carrierLink(pk[0].tracking, pk[0].trackInfo?.courier);
         meta.push(`<a class="chip-link track" href="${esc(cl.url)}" target="_blank" rel="noopener" onclick="event.stopPropagation()" title="open the carrier's tracking page">${cl.name ? "track on " + esc(cl.name) : "track package"} <span class="arr">↗</span></a>`);
     }
-    if (track && it.status === "ordered") meta.push(`<a class="chip-link track" href="${esc(track)}" target="_blank" rel="noopener" onclick="event.stopPropagation()">track package <span class="arr">↗</span></a>`);
+    if (pk.length > 1 && it.status !== "want") {
+        const done = pk.filter(p => p.trackInfo?.milestone === "delivered").length;
+        meta.push(`<span class="pkg-count ${done === pk.length ? "all" : ""}">📦 ${done} of ${pk.length} delivered</span>`);
+    }
     const link = safeUrl(it.link);
     if (link && it.status === "want") meta.push(`<a class="chip-link view" href="${esc(link)}" target="_blank" rel="noopener" onclick="event.stopPropagation()">view product <span class="arr">↗</span></a>`);
 
@@ -869,7 +900,7 @@ function itemRow(it, ci, ii) {
             <div class="item-name">${esc(it.name)}</div>
             ${meta.length ? `<div class="item-meta">${meta.join("")}</div>` : ""}
             ${it.notes && it.notes.trim() ? `<div class="item-note">${esc(it.notes.trim().replace(/\s+/g, " "))}</div>` : ""}
-            ${trackLine(it)}
+            ${trackLines(it)}
         </div>
         <button class="status-tag ${it.status}" title="change status" onclick="event.stopPropagation(); openStatusMenu(this, ${ci}, ${ii})"><span class="dot"></span>${it.status}<span class="caret">▾</span></button>
     </div>`;
@@ -961,7 +992,7 @@ async function setStatus(ci, ii, st) {
     const it = cats()[ci].items[ii];
     if (it.status === st) return;
     it.status = st;
-    if (st === "ordered" && !it.tracking) toast("📦 tap the item to add a tracking link");
+    if (st === "ordered" && !(it.packages || []).length) toast("📦 tap the item to add where you ordered it");
     if (st === "arrived") toast("🎉 nice, it's here");
     render();
     await saveData();
@@ -1025,22 +1056,20 @@ function openItem(ci, ii) {
     editing = { ci, ii };
     const isNew = ii === null;
     draft = isNew
-        ? { name: "", status: "want", price: "", store: "", link: "", tracking: "", notes: "", images: [] }
+        ? { name: "", status: "want", price: "", store: "", link: "", packages: [], notes: "", images: [] }
         : JSON.parse(JSON.stringify(cats()[ci].items[ii]));
     $("itemModalTitle").textContent = isNew ? `add for ${cats()[ci].name}` : "item details";
     draftShip = isNew ? homeOf(cats()[ci]) : shipOf(draft, cats()[ci]);
     paintSeg("fShip", draftShip);
     $("fName").value = draft.name;
-    $("fPrice").value = draft.price;
-    $("fStore").value = draft.store;
     $("fLink").value = draft.link;
-    $("fTracking").value = draft.tracking;
     $("fNotes").value = draft.notes;
     $("fImgUrl").value = "";
     $("fDelete").style.display = isNew ? "none" : "block";
     paintStatus();
     paintGallery();
-    paintTimeline();
+    if (!draft.packages.length) draft.packages.push({ store: "", tracking: "" });   // always show one order box
+    paintPackages();
     $("itemModal").style.display = "flex";
     $("itemModal").querySelector(".modal-box").scrollTop = 0;
     if (isNew) $("fName").focus();
@@ -1051,8 +1080,21 @@ function paintStatus() {
         const st = b.dataset.st;
         b.className = st + (draft.status === st ? " on" : "");
     });
+    // "where you ordered it" only makes sense once it's bought
+    const bought = draft.status !== "want";
+    $("fOrders").style.display = bought ? "block" : "none";
+    $("fWantHint").style.display = bought ? "none" : "block";
 }
-document.querySelectorAll("#fStatus button").forEach(b => b.onclick = () => { draft.status = b.dataset.st; paintStatus(); });
+document.querySelectorAll("#fStatus button").forEach(b => b.onclick = () => {
+    const wasWant = draft.status === "want";
+    draft.status = b.dataset.st;
+    paintStatus();
+    if (wasWant && draft.status !== "want") {
+        // jump straight to the store box so you can type where you got it
+        const first = document.querySelector("#fPackages .pkg-store");
+        if (first && !first.value) { first.scrollIntoView({ block: "center", behavior: "smooth" }); first.focus({ preventScroll: true }); }
+    }
+});
 
 function paintGallery() {
     $("fGallery").innerHTML = draft.images.map((url, i) =>
@@ -1073,11 +1115,12 @@ $("fImgUrl").onkeydown = (e) => { if (e.key === "Enter") addDraftImage(); };
 
 function closeItem() { $("itemModal").style.display = "none"; editing = null; draft = null; }
 $("fCancel").onclick = closeItem;
-$("fTracking").oninput = () => {
+$("fAddPkg").onclick = () => {
     if (!draft) return;
-    const v = $("fTracking").value.trim();
-    if (normNum(v) !== normNum(draft.tracking)) { draft.tracking = v; delete draft.trackInfo; }
-    paintTimeline();
+    draft.packages.push({ store: "", tracking: "" });
+    paintPackages();
+    const inputs = document.querySelectorAll("#fPackages .pkg-store");
+    inputs[inputs.length - 1].focus();
 };
 
 $("fSave").onclick = async () => {
@@ -1088,16 +1131,18 @@ $("fSave").onclick = async () => {
     draft.shipTo = draftShip === homeOf(cats()[editing.ci]) ? "" : draftShip;
     Object.assign(draft, {
         name,
-        price: $("fPrice").value.trim(),
-        store: $("fStore").value.trim(),
         link: $("fLink").value.trim(),
-        tracking: $("fTracking").value.trim(),
         notes: $("fNotes").value
     });
-    if (draft.tracking && draft.status === "want") draft.status = "ordered";
     const { ci, ii } = editing;
-    const oldTracking = ii === null ? "" : (cats()[ci].items[ii].tracking || "");
-    if (normNum(draft.tracking) !== normNum(oldTracking)) delete draft.trackInfo;
+    // drop empty boxes and duplicates; keep known results for numbers that didn't change
+    const old = ii === null ? [] : (cats()[ci].items[ii].packages || []);
+    const seen = new Set();
+    draft.packages = draft.packages
+        .map(p => ({ store: String(p.store || "").trim(), tracking: String(p.tracking || "").trim() }))
+        .filter(p => p.store || p.tracking)
+        .filter(p => !p.tracking || (!seen.has(normNum(p.tracking)) && seen.add(normNum(p.tracking))))
+        .map(p => { const prev = p.tracking && old.find(o => normNum(o.tracking) === normNum(p.tracking)); return prev?.trackInfo ? { ...p, trackInfo: prev.trackInfo } : p; });
     const saved = draft;
     if (ii === null) cats()[ci].items.push(draft);
     else cats()[ci].items[ii] = draft;
@@ -1105,7 +1150,7 @@ $("fSave").onclick = async () => {
     closeItem();
     render();
     await saveData();
-    if (isTrackable(saved) && !saved.trackInfo) refreshTracking(saved, { force: true });
+    for (const p of saved.packages) if (isTrackable(saved, p) && !p.trackInfo) refreshTracking(saved, p, { force: true });
 };
 
 $("fDelete").onclick = async () => {
@@ -1120,13 +1165,13 @@ $("fDelete").onclick = async () => {
 /* --- LIVE TRACKING (Ship24, via /api/track) --- */
 const TRACK_URL = "/api/track";
 const REFRESH_EVERY = 20 * 60 * 1000;     // re-check a package at most every 20 minutes
-const checking = new Set();               // items currently being looked up
-const retrying = new Set();               // items waiting to re-ask a slow first lookup
+const checking = new Set();               // packages currently being looked up
+const retrying = new Set();               // packages waiting to re-ask a slow first lookup
 let trackingOff = false;                  // set when the site has no Ship24 key yet
 
 const normNum = (s) => String(s || "").replace(/\s+/g, "").toUpperCase();
 const isTrackNumber = (s) => !safeUrl(s) && /^[A-Z0-9-]{5,50}$/.test(normNum(s));
-const isTrackable = (it) => it && it.status !== "want" && isTrackNumber(it.tracking);
+const isTrackable = (it, p) => it && p && it.status !== "want" && isTrackNumber(p.tracking);
 // Direct link to the carrier's own tracking page, so there's always a way to check
 // even if Ship24 is slow or not set up. Uses Ship24's courier when known, else the number's shape.
 function carrierLink(raw, courier = "") {
@@ -1140,7 +1185,7 @@ function carrierLink(raw, courier = "") {
         return { name: "USPS", url: `https://tools.usps.com/go/TrackConfirmAction?tLabels=${e}` };
     return { name: "", url: `https://www.google.com/search?q=${encodeURIComponent(n + " tracking")}` };
 }
-const findItem = (obj) => { for (const cat of cats()) if (cat.items.includes(obj)) return true; return false; };
+const ownerOf = (pkg) => { for (const cat of cats()) for (const it of cat.items) if ((it.packages || []).includes(pkg)) return it; return null; };
 
 function fmtWhen(s) {
     if (!s) return "";
@@ -1157,58 +1202,120 @@ function fmtWhen(s) {
 }
 const fmtDay = (s) => fmtWhen(s).split(" ")[0];
 
-function trackLine(it) {
-    if (!isTrackNumber(it.tracking) || it.status === "want") return "";
-    if ((checking.has(it) || retrying.has(it)) && !it.trackInfo) return `<div class="track-line checking"><span class="tdot"></span>checking with the carrier…</div>`;
-    const t = it.trackInfo;
-    if (!t) return "";
+function pkgSummary(p, it) {
+    // one short line for a package: "● on the way · Memphis, TN · arrives Tue"
+    if ((checking.has(p) || retrying.has(p)) && !p.trackInfo) return { cls: "checking", label: "checking with the carrier…", sub: "" };
+    const t = p.trackInfo;
+    if (!t) return null;
     const bits = [];
     if (t.milestone === "delivered") { const w = fmtWhen(t.deliveredAt || t.latest?.when); if (w) bits.push(w); }
     else {
         if (t.latest?.location && t.milestone !== "pending") bits.push(t.latest.location);
         if (t.eta) bits.push("arrives " + fmtDay(t.eta));
     }
-    return `<div class="track-line m-${esc(t.milestone)}" title="tap the item for the full timeline"><span class="tdot"></span>${esc(t.label)}${bits.length ? ` <span class="tsub">· ${esc(bits.join(" · "))}</span>` : ""}</div>`;
+    return { cls: "m-" + t.milestone, label: t.label, sub: bits.join(" · ") };
 }
 
-function paintTimeline() {
-    const box = $("fTimeline");
-    if (!draft || !isTrackNumber(draft.tracking)) { box.innerHTML = ""; return; }
-    if (trackingOff) { box.innerHTML = `<div class="field-help" style="margin-top:8px">${panelCarrierBtn()}</div>`; return; }
-    const t = draft.trackInfo;
-    if (!t) { box.innerHTML = `<div class="field-help" style="margin-top:8px; display:flex; align-items:center; gap:8px; flex-wrap:wrap;">${panelCarrierBtn()}<span>${checking.size ? "checking with the carrier…" : "live updates start once it's saved and ordered."}</span></div>`; return; }
+function trackLines(it) {
+    if (it.status === "want") return "";
+    const pk = it.packages || [];
+    const multi = pk.length > 1;
+    // name each line by its store; if one store sent several boxes, number them
+    const sameStore = (p) => pk.filter(o => (o.store || "").toLowerCase() === (p.store || "").toLowerCase()).length;
+    const boxNo = (p, i) => pk.slice(0, i + 1).filter(o => (o.store || "").toLowerCase() === (p.store || "").toLowerCase()).length;
+    const label = (p, i) => !p.store ? "order " + (i + 1) : sameStore(p) > 1 ? `${p.store} · box ${boxNo(p, i)}` : p.store;
+    return pk.map((p, i) => {
+        const tag = multi ? `<span class="pkg-tag">${esc(label(p, i))}</span>` : "";
+        // with several orders, each line gets its own small carrier link
+        const lnk = safeUrl(p.tracking);
+        const cl = lnk ? { name: "link", url: lnk } : carrierLink(p.tracking, p.trackInfo?.courier);
+        const mini = multi && p.tracking ? `<a class="mini-track" href="${esc(cl.url)}" target="_blank" rel="noopener" onclick="event.stopPropagation()" title="open this order on the carrier's site">${esc(cl.name || "track")} ↗</a>` : "";
+        if (!p.tracking) return multi ? `<div class="track-line m-pending">${tag}<span class="tsub">no tracking yet</span></div>` : "";
+        if (lnk) return multi ? `<div class="track-line m-pending">${tag}<span class="tsub">tracking link</span>${mini}</div>` : "";
+        const s = isTrackNumber(p.tracking) ? pkgSummary(p, it) : null;
+        if (!s) return multi ? `<div class="track-line m-pending">${tag}<span class="tdot"></span>not checked yet${mini}</div>` : "";
+        return `<div class="track-line ${esc(s.cls)}" title="tap the item for the full timeline">${tag}<span class="tdot"></span>${esc(s.label)}${s.sub ? ` <span class="tsub">· ${esc(s.sub)}</span>` : ""}${mini}</div>`;
+    }).join("");
+}
+
+/* panel: one box per package, each with its own status/timeline */
+function paintPackages() {
+    if (!draft) return;
+    const multi = draft.packages.length > 1;
+    $("fPackages").innerHTML = draft.packages.map((p, i) => `
+        <div class="pkg">
+            <div class="pkg-row">
+                <input class="pkg-store" data-pkg="${i}" value="${esc(p.store || "")}" placeholder="store, e.g. target" autocomplete="off">
+                ${multi ? `<button type="button" class="pkg-del" title="remove this order" onclick="removePkg(${i})">×</button>` : ""}
+            </div>
+            <input class="pkg-track" data-pkg="${i}" value="${esc(p.tracking || "")}" placeholder="tracking number (add it when you get it)" autocomplete="off" spellcheck="false">
+            <div class="pkg-tl" id="pkgTl-${i}"></div>
+        </div>`).join("");
+    document.querySelectorAll("#fPackages .pkg-store").forEach(inp => inp.oninput = () => { draft.packages[+inp.dataset.pkg].store = inp.value; });
+    document.querySelectorAll("#fPackages .pkg-track").forEach(inp => inp.oninput = () => {
+        const p = draft.packages[+inp.dataset.pkg];
+        const v = inp.value.trim();
+        if (normNum(v) !== normNum(p.tracking)) { p.tracking = v; delete p.trackInfo; }
+        paintPkgTimeline(+inp.dataset.pkg);
+    });
+    draft.packages.forEach((_, i) => paintPkgTimeline(i));
+}
+
+function removePkg(i) {
+    draft.packages.splice(i, 1);
+    if (!draft.packages.length) draft.packages.push({ store: "", tracking: "" });
+    paintPackages();
+}
+
+function carrierBtn(p, verb = "open on") {
+    if (!isTrackNumber(p.tracking)) return "";
+    const cl = carrierLink(p.tracking, p.trackInfo?.courier);
+    return `<a class="chip-link track" href="${esc(cl.url)}" target="_blank" rel="noopener">${cl.name ? verb + " " + esc(cl.name) : "look it up"} <span class="arr">↗</span></a>`;
+}
+
+function paintPkgTimeline(i) {
+    const box = $("pkgTl-" + i);
+    const p = draft?.packages[i];
+    if (!box || !p) return;
+    if (!isTrackNumber(p.tracking)) { box.innerHTML = ""; return; }
+    // is this exact package being looked up right now? (match the saved one by number)
+    const live = editing && editing.ii !== null ? (cats()[editing.ci]?.items[editing.ii]?.packages || []).find(o => normNum(o.tracking) === normNum(p.tracking)) : null;
+    const busy = live && (checking.has(live) || retrying.has(live));
+    const t = p.trackInfo;
+    if (trackingOff || !t) {
+        const msg = trackingOff ? "" : busy ? "checking with the carrier…" : "live updates start once it's saved and ordered.";
+        box.innerHTML = `<div class="field-help" style="margin-top:8px; display:flex; align-items:center; gap:8px; flex-wrap:wrap;">${carrierBtn(p)}<span>${msg}</span></div>`;
+        return;
+    }
     const colour = { delivered: "var(--arrived)", exception: "var(--accent)", failed_attempt: "var(--accent)", pending: "var(--muted)", info_received: "var(--muted)" }[t.milestone] || "var(--ordered)";
     const sub = [t.courier && t.courier.toUpperCase(), t.eta && t.milestone !== "delivered" ? "arrives " + fmtDay(t.eta) : "", t.checkedAt ? "checked " + fmtWhen(new Date(t.checkedAt).toISOString()) : ""].filter(Boolean).join(" · ");
     const evs = (t.events || []).map(e => `<div class="tl-ev"><div class="ev-text">${esc(e.text || "update")}</div><div class="ev-meta">${esc([e.location, fmtWhen(e.when)].filter(Boolean).join(" · "))}</div></div>`).join("");
     box.innerHTML = `<div class="timeline">
         <div class="tl-head"><div class="tl-status" style="color:${colour}"><span class="tdot"></span>${esc(t.label)}</div>
-        <span style="display:flex; gap:6px;">${panelCarrierBtn()}<button type="button" class="tl-refresh" onclick="refreshFromPanel()">↻ refresh</button></span></div>
+        <span style="display:flex; gap:6px;">${carrierBtn(p)}<button type="button" class="tl-refresh" onclick="refreshFromPanel(${i})">↻ refresh</button></span></div>
         ${sub ? `<div class="tl-sub">${esc(sub)}</div>` : ""}
         <div style="color:${colour}">${evs || `<div class="field-help">no updates from the carrier yet. it can take a day after ordering.</div>`}</div>
     </div>`;
 }
 
-function panelCarrierBtn() {
-    if (!draft || !isTrackNumber(draft.tracking)) return "";
-    const cl = carrierLink(draft.tracking, draft.trackInfo?.courier);
-    return `<a class="chip-link track" href="${esc(cl.url)}" target="_blank" rel="noopener">${cl.name ? "open on " + esc(cl.name) : "look it up"} <span class="arr">↗</span></a>`;
-}
+function repaintPanelTimelines() { if (draft) draft.packages.forEach((_, i) => paintPkgTimeline(i)); }
 
-function refreshFromPanel() {
+function refreshFromPanel(i) {
     if (!editing || editing.ii === null) return;
     const it = cats()[editing.ci].items[editing.ii];
-    refreshTracking(it, { force: true });
+    const p = (it.packages || []).find(o => normNum(o.tracking) === normNum(draft.packages[i]?.tracking));
+    if (p) refreshTracking(it, p, { force: true });
 }
 
-// Looks up one package and updates it. Uses the item object itself, so it's safe if the list
-// is reordered or edited while the lookup is running.
-async function refreshTracking(it, { force = false, attempt = 0 } = {}) {
-    if (trackingOff || !isTrackable(it) || checking.has(it)) return;
-    if (!force && it.trackInfo && Date.now() - (it.trackInfo.checkedAt || 0) < REFRESH_EVERY) return;
-    if (!force && it.trackInfo?.milestone === "delivered") return;
-    const number = normNum(it.tracking);
-    checking.add(it);
-    render(); if (draft) paintTimeline();
+// Looks up one package and updates it. Works on the package object itself, so it's safe if
+// the list is reordered or edited while the lookup is running.
+async function refreshTracking(it, p, { force = false, attempt = 0 } = {}) {
+    if (trackingOff || !isTrackable(it, p) || checking.has(p)) return;
+    if (!force && p.trackInfo && Date.now() - (p.trackInfo.checkedAt || 0) < REFRESH_EVERY) return;
+    if (!force && p.trackInfo?.milestone === "delivered") return;
+    const number = normNum(p.tracking);
+    checking.add(p);
+    render(); repaintPanelTimelines();
     let res;
     try {
         const r = await api("POST", { trackingNumber: number }, TRACK_URL);
@@ -1217,38 +1324,48 @@ async function refreshTracking(it, { force = false, attempt = 0 } = {}) {
         if (!r.ok) { console.warn("tracking failed", r.status, res); return; }
     } catch (e) { console.warn("tracking failed", e); return; }
     finally {
-        checking.delete(it);
-        render(); if (draft) paintTimeline();
+        checking.delete(p);
+        render(); repaintPanelTimelines();
     }
-    if (!findItem(it) || normNum(it.tracking) !== number) return;   // deleted or changed meanwhile
+    it = ownerOf(p);
+    if (!it || normNum(p.tracking) !== number) return;   // deleted or changed meanwhile
 
     if (res.slow) {   // first lookup still running at Ship24; try again shortly
         if (attempt < 3) {
-            retrying.add(it); render();
-            setTimeout(() => { retrying.delete(it); refreshTracking(it, { force: true, attempt: attempt + 1 }); }, 15000);
+            retrying.add(p); render();
+            setTimeout(() => { retrying.delete(p); const o = ownerOf(p); if (o) refreshTracking(o, p, { force: true, attempt: attempt + 1 }); }, 15000);
         } else { render(); }
         return;
     }
-    const before = JSON.stringify(it.trackInfo || {});
-    it.trackInfo = { ...res, checkedAt: Date.now() };
+    const before = JSON.stringify({ ...(p.trackInfo || {}), checkedAt: 0 });
+    const wasDelivered = p.trackInfo?.milestone === "delivered";
+    p.trackInfo = { ...res, checkedAt: Date.now() };
+
+    // the item is only "arrived" once every package is delivered
+    const pk = it.packages;
+    const done = pk.filter(o => o.trackInfo?.milestone === "delivered").length;
     let note = "";
-    if (res.milestone === "delivered" && it.status !== "arrived") { it.status = "arrived"; note = `📦 ${it.name} was delivered!`; }
+    if (res.milestone === "delivered" && !wasDelivered) {
+        if (done === pk.length && it.status !== "arrived") { it.status = "arrived"; note = `📦 ${it.name} was delivered!`; }
+        else if (done < pk.length) note = `📦 ${p.store ? p.store + " order" : "1 order"} for ${it.name} delivered (${done} of ${pk.length})`;
+    }
     // keep an open panel in sync
     if (draft && editing && editing.ii !== null && cats()[editing.ci]?.items[editing.ii] === it) {
-        draft.trackInfo = it.trackInfo;
-        if (note) { draft.status = "arrived"; paintStatus(); }
-        paintTimeline();
+        const dp = draft.packages.find(o => normNum(o.tracking) === number);
+        if (dp) dp.trackInfo = p.trackInfo;
+        if (it.status === "arrived" && draft.status !== "arrived") { draft.status = "arrived"; paintStatus(); }
+        repaintPanelTimelines();
     }
     render();
     if (note) toast(note);
-    const changed = JSON.stringify({ ...it.trackInfo, checkedAt: 0 }) !== JSON.stringify({ ...JSON.parse(before), checkedAt: 0 });
+    const changed = JSON.stringify({ ...p.trackInfo, checkedAt: 0 }) !== before;
     if (changed || note) await saveData();
 }
 
 async function refreshAllTracking() {
-    for (const cat of cats()) for (const it of cat.items) {
+    for (const cat of cats()) for (const it of cat.items) for (const p of (it.packages || [])) {
         if (trackingOff) return;
-        await refreshTracking(it);   // one at a time, gentle on the free plan's rate limits
+        await refreshTracking(it, p);   // one at a time, gentle on the free plan's rate limits
     }
 }
 setInterval(refreshAllTracking, REFRESH_EVERY);
