@@ -10,7 +10,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700;12..96,800&family=Figtree:wght@400;500;600;700&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
 <style>
-/* ============ THEME (colours from the favicon) ============ */
+/* ============ THEME (colors from the favicon) ============ */
 :root {
     --bg: #171311;
     --surface: #221c19;
@@ -320,7 +320,7 @@ a { color: inherit; }
     font-size: 12.5px; color: var(--muted); font-style: italic; margin-top: 4px;
     overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
 }
-.item-note::before { content: "“"; } .item-note::after { content: "”"; }
+
 .item-name { font-size: 15.5px; font-weight: 600; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .item-meta { font-size: 12.5px; color: var(--muted); margin-top: 5px; display: flex; align-items: center; gap: 6px 10px; flex-wrap: wrap; }
 .meta-bit { display: inline-flex; align-items: center; gap: 4px; }
@@ -392,6 +392,14 @@ a { color: inherit; }
 .sm-opt .check { margin-left: auto; color: var(--accent); font-weight: 800; }
 
 .sortable-ghost { opacity: 0.25; }
+/* until the list arrives, show a spinner instead of half a page */
+body.loading #filters, body.loading #places, body.loading #hint, body.loading #addCategory { display: none; }
+#loading { display: flex; flex-direction: column; align-items: center; gap: 14px; margin: 70px 0; color: var(--muted); font-size: 15px; font-weight: 600; }
+.spinner { width: 38px; height: 38px; border-radius: 50%; border: 4px solid var(--line); border-top-color: var(--accent); animation: spin 0.8s linear infinite; }
+@keyframes spin { to { transform: rotate(360deg); } }
+#loadError { text-align: center; margin: 60px 0; color: var(--muted); line-height: 1.7; }
+#loadError b { display: block; font-family: var(--display); font-size: 22px; color: var(--ink); }
+#loadError button { margin-top: 14px; }
 #emptyState { text-align: center; color: var(--muted); margin: 50px 0 30px; line-height: 1.7; font-size: 15px; }
 #emptyState b { font-family: var(--display); font-size: 22px; color: var(--ink); display: block; margin-bottom: 4px; }
 #addCategory {
@@ -508,6 +516,63 @@ textarea { height: 86px; resize: vertical; }
 #closeLightbox { position: absolute; top: 20px; right: 20px; background: transparent; border: none; color: white; font-size: 30px; }
 
 /* toast */
+/* ============ HELP TOUR ============ */
+#helpBtn { border-color: var(--accent); color: var(--accent); }
+#helpBtn:hover { background: var(--accent-soft); }
+#tour { position: fixed; inset: 0; z-index: 500; display: none; }
+body.touring { padding-bottom: 75vh; }
+#tourShade {          /* blocks taps on the page while the tour is open */
+    position: absolute; inset: 0;
+}
+#tourShade.full { background: rgba(10,8,7,0.72); }
+#tourSpot {           /* the lit-up hole around the thing being explained */
+    position: fixed; border-radius: 16px; pointer-events: none;
+    box-shadow: 0 0 0 9999px rgba(10,8,7,0.72), 0 0 0 3px var(--accent);
+    transition: top 0.3s ease, left 0.3s ease, width 0.3s ease, height 0.3s ease;
+}
+#tourCard {
+    position: fixed; width: 380px; max-width: calc(100vw - 24px);
+    background: var(--surface); color: var(--ink);
+    border: 1px solid var(--line); border-radius: 18px;
+    padding: 22px 22px 18px;
+    box-shadow: 0 20px 60px rgba(0,0,0,0.55);
+    transition: top 0.3s ease, left 0.3s ease;
+}
+#tourCard.center { top: 50% !important; left: 50% !important; transform: translate(-50%, -50%); }
+.tour-step { font-family: var(--mono); font-size: 12px; letter-spacing: 1.5px; text-transform: uppercase; color: var(--accent); font-weight: 700; }
+.tour-title { font-family: var(--display); font-size: 25px; font-weight: 800; letter-spacing: -0.5px; margin: 6px 0 8px; line-height: 1.15; }
+.tour-text { font-size: 17.5px; line-height: 1.55; }
+.tour-text b { color: var(--accent); }
+.tour-text .pill { display: inline-block; font-size: 14px; font-weight: 700; padding: 1px 8px; border-radius: 6px; margin: 2px 0; }
+.tour-text .pill.want { color: var(--want); background: var(--want-bg); }
+.tour-text .pill.ordered { color: var(--ordered); background: var(--ordered-bg); }
+.tour-text .pill.arrived { color: var(--arrived); background: var(--arrived-bg); }
+.tour-dots { display: flex; gap: 6px; margin: 18px 0 14px; }
+.tour-dots span { width: 8px; height: 8px; border-radius: 50%; background: var(--line); }
+.tour-dots span.on { background: var(--accent); width: 22px; border-radius: 4px; }
+.tour-btns { display: flex; gap: 10px; align-items: center; }
+.tour-btns .btn-primary { font-size: 17px; padding: 14px; }
+.tour-btns .btn-plain { font-size: 15px; padding: 13px 16px; }
+.tour-head { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-top: -6px; }
+#tourSkip { background: transparent; border: 1px solid var(--line); border-radius: 9px; color: var(--muted); font-size: 14px; font-weight: 700; padding: 6px 10px; flex-shrink: 0; }
+#tourSkip:hover { color: var(--ink); }
+@media (max-width: 600px) {
+    /* on phones the card sits at the bottom like a sheet */
+    #tourCard:not(.center) { left: 12px !important; right: 12px; top: auto !important; bottom: 12px; width: auto; }
+    .tour-title { font-size: 23px; }
+    .tour-text { font-size: 17px; }
+}
+
+#tip {
+    position: fixed; z-index: 450; display: none; pointer-events: none;
+    max-width: min(380px, calc(100vw - 24px));
+    background: var(--ink); color: var(--bg);
+    padding: 8px 11px; border-radius: 9px;
+    font-size: 13.5px; font-weight: 600; line-height: 1.4; font-style: normal;
+    white-space: normal; overflow-wrap: anywhere;
+    box-shadow: 0 8px 24px rgba(0,0,0,0.4);
+}
+
 #toast {
     position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%);
     background: var(--ink); color: var(--bg); padding: 11px 16px; border-radius: 12px; font-size: 13.5px; font-weight: 600;
@@ -530,7 +595,7 @@ textarea { height: 86px; resize: vertical; }
 </style>
 </head>
 
-<body>
+<body class="loading">
 
 <div id="dates"></div>
 
@@ -541,6 +606,7 @@ textarea { height: 86px; resize: vertical; }
             <div id="eyebrow" class="year">deals 2026</div>
             <div id="bigtitle">black friday list</div>
         </div>
+        <button id="helpBtn" class="icon-btn" title="show me how this works">? help</button>
         <button id="toggleMode" class="icon-btn" title="switch light/dark">☀︎ light</button>
     </div>
 
@@ -548,7 +614,7 @@ textarea { height: 86px; resize: vertical; }
     <div id="places"></div>
     <div id="hint">tap an item to open it • tap its status to change it</div>
 
-    <div id="board"></div>
+    <div id="board"><div id="loading"><div class="spinner"></div>loading your list…</div></div>
     <button id="addCategory" class="icon-btn">+ add a person (or a group like "misc")</button>
 </div>
 
@@ -570,7 +636,7 @@ textarea { height: 86px; resize: vertical; }
         <input id="fLink" placeholder="https://... (where you're thinking of buying it)">
 
         <label class="field-label">notes</label>
-        <textarea id="fNotes" placeholder="colour, size, which stores to check, deal code..."></textarea>
+        <textarea id="fNotes" placeholder="color, size, which stores to check, deal code..."></textarea>
 
         <label class="field-label">pictures</label>
         <div id="fGallery" class="gallery"></div>
@@ -656,6 +722,25 @@ textarea { height: 86px; resize: vertical; }
     <button class="sm-opt arrived" data-st="arrived"><span class="dot"></span><span><div class="sm-name">arrived</div><div class="sm-desc">got it, all done</div></span></button>
 </div>
 
+<div id="tour" role="dialog" aria-modal="true" aria-label="how to use the list">
+    <div id="tourShade"></div>
+    <div id="tourSpot"></div>
+    <div id="tourCard">
+        <div class="tour-head">
+            <div class="tour-step" id="tourStep"></div>
+            <button id="tourSkip">close ✕</button>
+        </div>
+        <div class="tour-title" id="tourTitle"></div>
+        <div class="tour-text" id="tourText"></div>
+        <div class="tour-dots" id="tourDots"></div>
+        <div class="tour-btns">
+            <button type="button" class="btn-plain" id="tourBack">← back</button>
+            <button type="button" class="btn-primary" id="tourNext">next →</button>
+        </div>
+    </div>
+</div>
+
+<div id="tip"></div>
 <div id="toast"></div>
 
 <script src="https://cdn.jsdelivr.net/npm/sortablejs@1.15.0/Sortable.min.js"></script>
@@ -757,10 +842,11 @@ async function loadData() {
             let msg = await res.text();
             try { msg = JSON.parse(msg).error || msg; } catch {}
             console.error("load failed", res.status, msg);
-            alert("couldn't load data 😭\n\n" + msg);
+            showLoadError(msg);
             return;
         }
         const json = await res.json();
+        document.body.classList.remove("loading");
         const remote = json.record || {};
         if (remote.lists) data = remote;
         else if (Array.isArray(remote.categories)) data.lists.black_friday = remote.categories;
@@ -768,10 +854,16 @@ async function loadData() {
         render();
         if (changed) saveData();
         refreshAllTracking();
+        maybeAutoTour();
     } catch (e) {
         console.error(e);
-        alert("couldn't load data 😭 check console");
+        showLoadError(String(e.message || e));
     }
+}
+
+function showLoadError(msg) {
+    // keep the filters hidden; just say what happened and offer a retry
+    $("board").innerHTML = `<div id="loadError"><b>couldn't load the list 😭</b>check your internet and try again.<br><span style="font-size:12px">${esc(msg)}</span><br><button class="btn-primary" style="flex:none; padding:12px 22px" onclick="location.reload()">try again</button></div>`;
 }
 
 // Brings older data into the new shape. Returns true if anything changed.
@@ -830,6 +922,7 @@ function migrate() {
 }
 
 async function saveData() {
+    if (tourOn) return;   // the help tour uses a pretend list; never save it
     try {
         const res = await api("PUT", data);
         if (!res.ok) throw new Error("save failed: " + res.status + " " + await res.text());
@@ -1287,14 +1380,14 @@ function paintPkgTimeline(i) {
         box.innerHTML = `<div class="field-help" style="margin-top:8px; display:flex; align-items:center; gap:8px; flex-wrap:wrap;">${carrierBtn(p)}<span>${msg}</span></div>`;
         return;
     }
-    const colour = { delivered: "var(--arrived)", exception: "var(--accent)", failed_attempt: "var(--accent)", pending: "var(--muted)", info_received: "var(--muted)" }[t.milestone] || "var(--ordered)";
+    const color = { delivered: "var(--arrived)", exception: "var(--accent)", failed_attempt: "var(--accent)", pending: "var(--muted)", info_received: "var(--muted)" }[t.milestone] || "var(--ordered)";
     const sub = [t.courier && t.courier.toUpperCase(), t.eta && t.milestone !== "delivered" ? "arrives " + fmtDay(t.eta) : "", t.checkedAt ? "checked " + fmtWhen(new Date(t.checkedAt).toISOString()) : ""].filter(Boolean).join(" · ");
     const evs = (t.events || []).map(e => `<div class="tl-ev"><div class="ev-text">${esc(e.text || "update")}</div><div class="ev-meta">${esc([e.location, fmtWhen(e.when)].filter(Boolean).join(" · "))}</div></div>`).join("");
     box.innerHTML = `<div class="timeline">
-        <div class="tl-head"><div class="tl-status" style="color:${colour}"><span class="tdot"></span>${esc(t.label)}</div>
+        <div class="tl-head"><div class="tl-status" style="color:${color}"><span class="tdot"></span>${esc(t.label)}</div>
         <span style="display:flex; gap:6px;">${carrierBtn(p)}<button type="button" class="tl-refresh" onclick="refreshFromPanel(${i})">↻ refresh</button></span></div>
         ${sub ? `<div class="tl-sub">${esc(sub)}</div>` : ""}
-        <div style="color:${colour}">${evs || `<div class="field-help">no updates from the carrier yet. it can take a day after ordering.</div>`}</div>
+        <div style="color:${color}">${evs || `<div class="field-help">no updates from the carrier yet. it can take a day after ordering.</div>`}</div>
     </div>`;
 }
 
@@ -1310,6 +1403,7 @@ function refreshFromPanel(i) {
 // Looks up one package and updates it. Works on the package object itself, so it's safe if
 // the list is reordered or edited while the lookup is running.
 async function refreshTracking(it, p, { force = false, attempt = 0 } = {}) {
+    if (tourOn) return;
     if (trackingOff || !isTrackable(it, p) || checking.has(p)) return;
     if (!force && p.trackInfo && Date.now() - (p.trackInfo.checkedAt || 0) < REFRESH_EVERY) return;
     if (!force && p.trackInfo?.milestone === "delivered") return;
@@ -1440,6 +1534,158 @@ document.addEventListener("keydown", (e) => {
     else if ($("itemModal").style.display === "flex") closeItem();
     else if ($("catModal").style.display === "flex") $("catModal").style.display = "none";
 });
+
+/* --- FULL TEXT ON HOVER (for names/notes cut off with …) --- */
+if (window.matchMedia && matchMedia("(hover: hover)").matches) {
+    const tip = $("tip");
+    let tipFor = null;
+    const hideTip = () => { tip.style.display = "none"; tipFor = null; };
+    document.addEventListener("mouseover", (e) => {
+        const el = e.target.closest(".item-name, .item-note, .cat-name");
+        if (el === tipFor) return;
+        if (!el || el.scrollWidth <= el.clientWidth + 1 || tourOn) { hideTip(); return; }
+        tipFor = el;
+        tip.textContent = el.textContent.trim();
+        tip.style.display = "block";
+        placeTip();
+    });
+    function placeTip() {
+        if (!tipFor || !document.body.contains(tipFor)) { hideTip(); return; }
+        const r = tipFor.getBoundingClientRect(), tw = tip.offsetWidth, th = tip.offsetHeight;
+        let top = r.bottom + 6;
+        if (top + th > window.innerHeight - 8) top = r.top - th - 6;
+        tip.style.top = top + "px";
+        tip.style.left = Math.max(12, Math.min(window.innerWidth - tw - 12, r.left - 4)) + "px";
+    }
+    // stay attached to the text while the page scrolls
+    window.addEventListener("scroll", placeTip, { passive: true });
+    document.addEventListener("mousedown", hideTip);
+}
+
+/* --- HELP TOUR --- */
+let tourOn = false;
+let tourI = 0;
+let tourSaved = null;   // the real list + filters, put back when the tour ends
+
+// A pretend list so every step has something to point at. Never saved.
+function tourDemo() {
+    const day = (n) => { const d = new Date(); d.setDate(d.getDate() + n); return d.toISOString().slice(0, 10); };
+    return { lists: { my_stuff: [], black_friday: [
+        { name: "grandma (example)", home: "houston", _collapsed: false, items: [
+            { name: "warm socks", status: "want", notes: "size medium, any color", images: [], packages: [], link: "", shipTo: "" },
+            { name: "reading glasses", status: "ordered", notes: "", images: [], link: "", shipTo: "", packages: [
+                { store: "amazon", tracking: "TBA000000000000", trackInfo: { milestone: "in_transit", label: "on the way", eta: day(2), latest: { location: "Houston, TX" }, events: [], checkedAt: Date.now() } } ] },
+            { name: "tea kettle", status: "arrived", notes: "", images: [], link: "", shipTo: "", packages: [] } ] },
+        { name: "dad (example)", home: "california", _collapsed: false, items: [
+            { name: "slippers", status: "want", notes: "", images: [], packages: [], link: "", shipTo: "" } ] }
+    ] } };
+}
+
+const TOUR = [
+    { title: "hi! 👋", text: "This is the family's <b>Black Friday list</b>.<br><br>I'll show you how it works, one step at a time. It only takes a minute.<br><br>(This is a pretend list, so you can't break anything.)" },
+    { el: "#dates", title: "how many days left", text: "These show how many days until <b>Thanksgiving</b>, <b>Black Friday</b> and <b>Cyber Monday</b>." },
+    { el: ".category-header", title: "everyone has their own list", text: "Each person has their own section, with their name at the top.<br><br>🏠 means their things get delivered to <b>Houston</b>.<br>🌴 means <b>California</b>." },
+    { el: ".add-item-btn", title: "adding something", text: "To add something a person wants, tap <b>+ add item</b> next to their name.<br><br>Type what it is, then tap <b>save</b>. That's it!" },
+    { el: ".item", title: "one line = one thing", text: "Each line is one thing on the list.<br><br><b>Tap it</b> to see everything about it: notes, pictures and links. You can change anything there." },
+    { el: ".status-tag", title: "where is it at?", text: "This little tag shows where it's at:<br><span class='pill want'>● want</span> still need to buy it<br><span class='pill ordered'>● ordered</span> bought, on its way<br><span class='pill arrived'>● arrived</span> it's here!<br><br><b>Tap it</b> to change it." },
+    { el: ".item.st-ordered", title: "where's my package?", text: "Once something is ordered, you can see where the package is right now.<br><br>When it's delivered, it changes to <b>arrived</b> by itself." },
+    { el: "#filters", title: "show only some things", text: "Tap these to see only some things.<br><br>For example, tap <b>ordered</b> to see what's still on the way. Tap <b>all</b> to see everything again." },
+    { el: "#places", title: "houston or california", text: "Tap <b>🌴 california</b> to see only what's going to the California house, or <b>🏠 houston</b> for home.<br><br><b>everywhere</b> shows both." },
+    { el: "#addCategory", title: "adding a person", text: "To add someone new, tap here and type their name." },
+    { el: "#helpBtn", title: "that's it! 🛍️", text: "If you forget anything, tap <b>? help</b> up here to see this again.<br><br>Happy shopping!" }
+];
+
+function startTour() {
+    if (tourOn) return;
+    ["itemModal", "catModal"].forEach(id => $(id).style.display = "none");
+    closeStatusMenu(); $("lightbox").style.display = "none";
+    tourSaved = { data, filter, place, editing, draft };
+    tourOn = true;
+    data = tourDemo(); filter = "all"; place = "all"; editing = null; draft = null;
+    render();
+    $("tour").style.display = "block";
+    document.body.classList.add("touring");
+    showTourStep(0);
+}
+
+function endTour() {
+    if (!tourOn) return;
+    ({ data, filter, place, editing, draft } = tourSaved);
+    tourSaved = null;
+    tourOn = false;
+    $("tour").style.display = "none";
+    document.body.classList.remove("touring");
+    render();
+    try { localStorage.setItem("helpSeen", "1"); } catch {}
+    window.scrollTo({ top: 0, behavior: "smooth" });
+}
+
+function showTourStep(i) {
+    tourI = Math.max(0, Math.min(TOUR.length - 1, i));
+    const s = TOUR[tourI];
+    $("tourStep").textContent = `step ${tourI + 1} of ${TOUR.length}`;
+    $("tourTitle").textContent = s.title;
+    $("tourText").innerHTML = s.text;
+    $("tourDots").innerHTML = TOUR.map((_, k) => `<span class="${k === tourI ? "on" : ""}"></span>`).join("");
+    $("tourBack").style.visibility = tourI === 0 ? "hidden" : "visible";
+    $("tourNext").textContent = tourI === 0 ? "show me →" : tourI === TOUR.length - 1 ? "done ✓" : "next →";
+    const el = s.el && document.querySelector(s.el);
+    if (el && window.innerWidth <= 600) {
+        // phone: the card is a sheet at the bottom, so keep the lit-up thing above it
+        const ch = $("tourCard").offsetHeight;
+        const cardTop = window.innerHeight - 12 - ch;
+        const r = el.getBoundingClientRect();
+        let delta = r.top - 70;                                     // aim for near the top
+        if (r.bottom - delta > cardTop - 16) delta = r.bottom - (cardTop - 16);
+        window.scrollBy(0, delta);
+    } else if (el) {
+        el.scrollIntoView({ block: "center" });
+    }
+    placeTour();
+    $("tourNext").focus({ preventScroll: true });
+}
+
+function placeTour() {
+    if (!tourOn) return;
+    const s = TOUR[tourI], el = s.el && document.querySelector(s.el);
+    const spot = $("tourSpot"), card = $("tourCard"), shade = $("tourShade");
+    if (!el) {   // intro / no target: card in the middle, whole page dimmed
+        spot.style.display = "none"; shade.classList.add("full"); card.classList.add("center");
+        return;
+    }
+    shade.classList.remove("full"); card.classList.remove("center"); spot.style.display = "block";
+    const r = el.getBoundingClientRect(), pad = 8;
+    Object.assign(spot.style, { top: r.top - pad + "px", left: r.left - pad + "px", width: r.width + pad * 2 + "px", height: r.height + pad * 2 + "px" });
+    if (window.innerWidth <= 600) return;   // phone: card is a bottom sheet (CSS)
+    const cw = card.offsetWidth, ch = card.offsetHeight, gap = 18;
+    let top = r.bottom + pad + gap;
+    if (top + ch > window.innerHeight - 12) top = r.top - pad - gap - ch;          // not enough room below: go above
+    if (top < 12) top = Math.min(window.innerHeight - ch - 12, Math.max(12, r.top));  // tall target: overlap the side
+    let left = r.left + r.width / 2 - cw / 2;
+    if (r.right + gap + cw < window.innerWidth - 12 && (top === r.top || r.height > window.innerHeight * 0.5)) left = r.right + gap;
+    left = Math.max(12, Math.min(window.innerWidth - cw - 12, left));
+    card.style.top = top + "px"; card.style.left = left + "px";
+}
+
+$("helpBtn").onclick = startTour;
+$("tourNext").onclick = () => tourI === TOUR.length - 1 ? endTour() : showTourStep(tourI + 1);
+$("tourBack").onclick = () => showTourStep(tourI - 1);
+$("tourSkip").onclick = endTour;
+window.addEventListener("resize", placeTour);
+window.addEventListener("scroll", placeTour, { passive: true });
+document.addEventListener("keydown", (e) => {
+    if (!tourOn) return;
+    if (e.key === "Escape") { e.stopImmediatePropagation(); endTour(); }
+    else if (e.key === "ArrowRight") $("tourNext").click();
+    else if (e.key === "ArrowLeft" && tourI > 0) $("tourBack").click();
+}, true);
+
+// First visit on this phone/computer: start the tour by itself, once.
+function maybeAutoTour() {
+    let seen = false;
+    try { seen = localStorage.getItem("helpSeen") === "1"; } catch { seen = true; }
+    if (!seen) setTimeout(startTour, 600);
+}
 
 /* --- THEME --- */
 function applyTheme(light) {
