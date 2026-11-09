@@ -1314,7 +1314,10 @@ let trackingOff = false;                  // set when the site has no Ship24 key
 
 const normNum = (s) => String(s || "").replace(/\s+/g, "").toUpperCase();
 const isTrackNumber = (s) => !safeUrl(s) && /^[A-Z0-9-]{5,50}$/.test(normNum(s));
-const isTrackable = (it, p) => it && p && it.status !== "want" && isTrackNumber(p.tracking);
+// Amazon's own deliveries (TBA...) and USPS can't be live-tracked by 17TRACK, and it would still
+// charge a credit for each, so those packages just keep their carrier button.
+const noLiveTracking = (s) => { const n = normNum(s); return /^TB[ACM]/.test(n) || /^9[2-5]\d{18,24}$/.test(n) || /^[A-Z]{2}\d{9}US$/.test(n); };
+const isTrackable = (it, p) => it && p && it.status !== "want" && isTrackNumber(p.tracking) && !noLiveTracking(p.tracking);
 // Direct link to the carrier's own tracking page, so there's always a way to check
 // even if Ship24 is slow or not set up. Uses Ship24's courier when known, else the number's shape.
 function carrierLink(raw, courier = "") {
@@ -1375,6 +1378,7 @@ function trackLines(it) {
         const mini = multi && p.tracking ? `<a class="mini-track" href="${esc(cl.url)}" target="_blank" rel="noopener" onclick="event.stopPropagation()" title="open this order on the carrier's site">${esc(cl.name || "track")} ↗</a>` : "";
         if (!p.tracking) return multi ? `<div class="track-line m-pending">${tag}<span class="tsub">no tracking yet</span></div>` : "";
         if (lnk) return multi ? `<div class="track-line m-pending">${tag}<span class="tsub">tracking link</span>${mini}</div>` : "";
+        if (noLiveTracking(p.tracking)) return multi ? `<div class="track-line m-pending">${tag}<span class="tsub">updates on ${esc(cl.name)}'s site</span>${mini}</div>` : "";
         const s = isTrackNumber(p.tracking) ? pkgSummary(p, it) : null;
         if (!s) return multi ? `<div class="track-line m-pending">${tag}<span class="tdot"></span>not checked yet${mini}</div>` : "";
         return `<div class="track-line ${esc(s.cls)}" title="tap the item for the full timeline">${tag}<span class="tdot"></span>${esc(s.label)}${s.sub ? ` <span class="tsub">· ${esc(s.sub)}</span>` : ""}${mini}</div>`;
@@ -1425,6 +1429,11 @@ function paintPkgTimeline(i) {
     const live = editing && editing.ii !== null ? (cats()[editing.ci]?.items[editing.ii]?.packages || []).find(o => normNum(o.tracking) === normNum(p.tracking)) : null;
     const busy = live && (checking.has(live) || retrying.has(live));
     const t = p.trackInfo;
+    if (noLiveTracking(p.tracking)) {
+        const who = carrierLink(p.tracking).name;
+        box.innerHTML = `<div class="field-help" style="margin-top:8px; display:flex; align-items:center; gap:8px; flex-wrap:wrap;">${carrierBtn(p)}<span>${who === "Amazon" ? "amazon's own deliveries" : "usps packages"} don't get live updates here, so tap the button to check.</span></div>`;
+        return;
+    }
     if (trackingOff || !t) {
         const msg = trackingOff ? "" : busy ? "checking with the carrier…" : "live updates start once it's saved and ordered.";
         box.innerHTML = `<div class="field-help" style="margin-top:8px; display:flex; align-items:center; gap:8px; flex-wrap:wrap;">${carrierBtn(p)}<span>${msg}</span></div>`;
@@ -1477,7 +1486,7 @@ async function refreshTracking(it, p, { force = false, attempt = 0 } = {}) {
     if (res.slow) {   // first lookup still running at Ship24; try again shortly
         if (attempt < 3) {
             retrying.add(p); render();
-            setTimeout(() => { retrying.delete(p); const o = ownerOf(p); if (o) refreshTracking(o, p, { force: true, attempt: attempt + 1 }); }, 15000);
+            setTimeout(() => { retrying.delete(p); const o = ownerOf(p); if (o) refreshTracking(o, p, { force: true, attempt: attempt + 1 }); }, [5000, 15000, 30000][attempt]);
         } else { render(); }
         return;
     }
