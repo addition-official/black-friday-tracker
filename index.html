@@ -507,6 +507,7 @@ textarea { height: 86px; resize: vertical; }
     padding: 0 9px; display: flex; align-items: center;
 }
 #passError { color: var(--accent); font-size: 12.5px; font-weight: 600; margin-top: 8px; display: none; }
+#capsWarn { color: var(--ordered); font-size: 12.5px; font-weight: 700; margin-top: 8px; display: none; }
 
 /* lightbox */
 #lightbox {
@@ -705,6 +706,7 @@ body.touring { padding-bottom: 75vh; }
             <button id="togglePass" type="button" title="show passcode"></button>
         </div>
         <div id="passError">wrong passcode, try again</div>
+        <div id="capsWarn">⇪ caps lock is on</div>
         <div class="modal-actions">
             <button id="savePass" class="btn-primary">unlock</button>
         </div>
@@ -832,7 +834,12 @@ function askPasscode(isRetry) {
             resolve(val);
         };
         btn.onclick = submit;
-        input.onkeydown = (e) => { if (e.key === "Enter") submit(); };
+        // warn when caps lock is on (works on computers; phones don't report it)
+        const caps = (e) => { if (e.getModifierState) $("capsWarn").style.display = e.getModifierState("CapsLock") ? "block" : "none"; };
+        $("capsWarn").style.display = "none";
+        input.onkeydown = (e) => { caps(e); if (e.key === "Enter") submit(); };
+        input.onkeyup = caps;
+        input.onmousedown = caps;
     });
 }
 
@@ -1109,7 +1116,7 @@ async function setStatus(ci, ii, st) {
     if (it.status === st) return;
     it.status = st;
     if (st === "ordered" && !(it.packages || []).length) toast("📦 tap the item to add where you ordered it");
-    if (st === "arrived") toast("🎉 nice, it's here");
+    if (st === "arrived") toast("🎉 it is here");
     render();
     await saveData();
 }
@@ -1641,17 +1648,17 @@ function tourDemo() {
 }
 
 const TOUR = [
-    { title: "hi! 👋", text: "This is the family's <b>Black Friday list</b>.<br><br>I'll show you how it works, one step at a time. It only takes a minute.<br><br>(This is a pretend list, so you can't break anything.)" },
+    { title: "hello! 👋", text: "This is our family's <b>Black Friday list</b>.<br><br>This guide shows you how to use it, one step at a time.<br><br>During this guide you will see a <b>practice list</b>. Your real list is safe. You will see it again when the guide ends." },
     { el: "#dates", title: "how many days left", text: "These show how many days until <b>Thanksgiving</b>, <b>Black Friday</b> and <b>Cyber Monday</b>." },
-    { el: ".category-header", title: "everyone has their own list", text: "Each person has their own section, with their name at the top.<br><br>🏠 means their things get delivered to <b>Houston</b>.<br>🌴 means <b>California</b>." },
-    { el: ".add-item-btn", title: "adding something", text: "To add something a person wants, tap <b>+ add item</b> next to their name.<br><br>Type what it is, then tap <b>save</b>. That's it!" },
-    { el: ".item", title: "one line = one thing", text: "Each line is one thing on the list.<br><br><b>Tap it</b> to see everything about it: notes, pictures and links. You can change anything there." },
-    { el: ".status-tag", title: "where is it at?", text: "This little tag shows where it's at:<br><span class='pill want'>● want</span> still need to buy it<br><span class='pill ordered'>● ordered</span> bought, on its way<br><span class='pill arrived'>● arrived</span> it's here!<br><br><b>Tap it</b> to change it." },
-    { el: ".item.st-ordered", title: "where's my package?", text: "Once something is ordered, you can see where the package is right now.<br><br>When it's delivered, it changes to <b>arrived</b> by itself." },
-    { el: "#filters", title: "show only some things", text: "Tap these to see only some things.<br><br>For example, tap <b>ordered</b> to see what's still on the way. Tap <b>all</b> to see everything again." },
-    { el: "#places", title: "houston or california", text: "Tap <b>🌴 california</b> to see only what's going to the California house, or <b>🏠 houston</b> for home.<br><br><b>everywhere</b> shows both." },
-    { el: "#addCategory", title: "adding a person", text: "To add someone new, tap here and type their name." },
-    { el: "#helpBtn", title: "that's it! 🛍️", text: "If you forget anything, tap <b>? help</b> up here to see this again.<br><br>Happy shopping!" }
+    { el: ".category-header", title: "everyone has their own list", text: "Each person has their own list, with their name at the top.<br><br>🏠 means their things will be delivered to <b>Houston</b>.<br>🌴 means their things will be delivered to <b>California</b>." },
+    { el: ".add-item-btn", title: "adding something", text: "To add something a person wants, tap <b>+ add item</b> next to their name.<br><br>Type what it is, then tap <b>save</b>. That is all." },
+    { el: ".item", title: "each line is one thing", text: "Each line is one thing on the list.<br><br><b>Tap it</b> to see the notes, pictures and links. You can change anything there." },
+    { el: ".status-tag", title: "has it been bought?", text: "This tag shows if it has been bought:<br><span class='pill want'>● want</span> not bought yet<br><span class='pill ordered'>● ordered</span> bought, on the way<br><span class='pill arrived'>● arrived</span> it is here<br><br><b>Tap the tag</b> to change it." },
+    { el: ".item.st-ordered", title: "where is the package?", text: "After something is bought, you can see where the package is.<br><br>When it is delivered, the tag changes to <b>arrived</b> by itself." },
+    { el: "#filters", title: "see only some things", text: "Tap these buttons to see only some things.<br><br>For example, tap <b>ordered</b> to see only the things that are on the way. Tap <b>all</b> to see everything again." },
+    { el: "#places", title: "houston or california", text: "Tap <b>🌴 california</b> to see only the things going to the California house.<br><br>Tap <b>🏠 houston</b> to see only the things going to the Houston house.<br><br><b>everywhere</b> shows both." },
+    { el: "#addCategory", title: "adding a person", text: "To add a new person, tap here and type their name." },
+    { el: "#helpBtn", title: "all done! 🛍️", text: "If you forget something, tap <b>? help</b> at the top to see this guide again.<br><br>Tap <b>done</b> to go back to your list. Happy shopping!" }
 ];
 
 function startTour() {
